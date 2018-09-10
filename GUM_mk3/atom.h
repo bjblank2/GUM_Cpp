@@ -11,9 +11,11 @@ private:
 	vector<int> neighbors_1;
 	vector<int> neighbors_2;
 	vector<int> neighbors_3;
+	vector<int> neighbors;
 	vector<string> neighbor_plain_1;
 	vector<string> neighbor_plain_2;
 	vector<string> neighbor_plain_3;
+	vector<string> neighbor_plains;
 	int species;
 	int spin;
 	int phase;
@@ -35,5 +37,11 @@ public:
 	int getNeighborPhase(int _order, int _neighbor, vector<Atom> atom_list);
 	int getNumbNeighbors(int _order);
 	string getNeighborPlain(int _order, int _neighbor);
+
+	int getNeighborSpin(int _neighbor, vector<Atom> atom_list);
+	int getNeighborSpecies(int _neighbor, vector<Atom> atom_list);
+	int getNeighborPhase(int _neighbor, vector<Atom> atom_list);
+	int getNumbNeighbors();
+	string getNeighborPlain(int _neighbor);
 };
 #endif // !atom_h
