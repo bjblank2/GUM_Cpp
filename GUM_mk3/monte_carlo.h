@@ -19,5 +19,6 @@ void fillRuleList(vector<Rule> &list, const char * rule_file, const char * fit_f
 void fillAtomList(vector<Atom> &atom_list, int shape[3], int numb_species[3], string phase_init, string spin_init, string species_init);
 float evalSiteEnergy(float temp, int site, vector<Atom> &atom_list, vector<Rule> &cluster_rules, vector<Rule> &spin_rules);
 void calcBEGParams(int site, vector<Atom> &atom_list, vector<Rule> &cluster_rules, vector<Rule> &spin_rules, float BEG_params[]);
+vector<float> calcBEGParams(int site, vector<Atom> &atom_list, vector<Rule> &cluster_rules, vector<Rule> &spin_rules);
 void applyRules(int site, int neighbor, int order, vector<Atom> &atom_list, vector<Rule> & cluster_rules, vector<Rule> &spin_rules, float BEG_params[]);
 #endif // !mc_h

@@ -32,6 +32,7 @@ void Atom::setNeighbor(int _order, string _plain, int _index) {
 	}
 	neighbors.push_back(_index);
 	neighbor_plains.push_back(_plain);
+	neighbor_orders.push_back(_order);
 }
 
 int Atom::getNeighborSpin(int _order, int _neighbor, vector<Atom> atom_list) {
@@ -142,6 +143,10 @@ int Atom::getNeighborPhase(int _neighbor, vector<Atom> atom_list) {
 int Atom::getNumbNeighbors() {
 	int numb_neighbors = neighbors.size();
 	return numb_neighbors;
+}
+int Atom::getNeighborOrder(int neighbor, vector<Atom> atom_list) {
+	int neighbor_order = neighbor_orders[neighbor];
+	return neighbor_order;
 }
 string Atom::getNeighborPlain(int _neighbor) {
 	string neighbor_plain = neighbor_plain_1[_neighbor];

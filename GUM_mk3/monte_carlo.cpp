@@ -407,3 +407,80 @@ void calcBEGParams(int site, vector<Atom> &atom_list, vector<Rule> &cluster_rule
 	cout << BEG_params[0];
 	cout << BEG_params[1];
 }
+vector<float> calcBEGParams(int site, vector<Atom> &atom_list, vector<Rule> &cluster_rules, vector<Rule> &spin_rules) {
+	int home_spin = atom_list[site].getSpin();
+	int home_phase = atom_list[site].getPhase();
+	int home_species = atom_list[site].getSpecies();
+	float BEG_J;
+	float BEG_K;
+	for (int neighbor = 0; neighbor < atom_list[site].getNumbNeighbors(); neighbor++) {
+		int neighbor_spin = atom_list[site].getNeighborSpin(neighbor, atom_list);
+		int neighbor_phase = atom_list[site].getNeighborPhase(neighbor, atom_list);
+		int neighbor_species = atom_list[site].getNeighborSpecies(neighbor, atom_list);
+		int neighbor_order = atom_list[site].getNeighborOrder(neighbor, atom_list);
+		string neighbor_plain = atom_list[site].getNeighborPlain(neighbor);
+		for (int i = 0; i < cluster_rules.size(); i++) {
+			if (neighbor_order == cluster_rules[i].getOrder()) {
+				if (find(cluster_rules[i].home_species.begin(), cluster_rules[i].home_species.end(), home_species) != cluster_rules[i].home_species.end()) {
+					if (find(cluster_rules[i].neighbor_species.begin(), cluster_rules[i].neighbor_species.end(), neighbor_species) != cluster_rules[i].neighbor_species.end()) {
+						if (neighbor_plain == cluster_rules[i].getPlain()) {
+							if (cluster_rules[i].getNeighborArrangment() == "PERM") {
+								if (home_species != neighbor_species) {
+									if (cluster_rules[i].getPhase() == 1) {
+										BEG_K += cluster_rules[i].getEnergyContribution();
+									}
+									if (cluster_rules[i].getPhase() == 0) {
+										BEG_K += cluster_rules[i].getEnergyContribution();
+									}
+								}
+							}
+							if (cluster_rules[i].getNeighborArrangment() == "COMB") {
+								if (cluster_rules[i].getPhase() == 1) {
+									BEG_J += cluster_rules[i].getEnergyContribution();
+								}
+								if (cluster_rules[i].getPhase() == 0) {
+									BEG_K += cluster_rules[i].getEnergyContribution();
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		for (int i = 0; i < spin_rules.size(); i++) {
+			if (neighbor_order == spin_rules[i].getOrder()) {
+				if (find(spin_rules[i].home_species.begin(), spin_rules[i].home_species.end(), home_species) != spin_rules[i].home_species.end()) {
+					if (find(spin_rules[i].neighbor_species.begin(), spin_rules[i].neighbor_species.end(), neighbor_species) != spin_rules[i].neighbor_species.end()) {
+						if (neighbor_plain == spin_rules[i].getPlain()) {
+							string bla = spin_rules[i].getNeighborArrangment();
+							if (spin_rules[i].getNeighborArrangment() == "PERM") {
+								if (atom_list[site].getSpecies() != atom_list[neighbor].getSpecies()) {
+									if (spin_rules[i].getPhase() == 1) {
+										BEG_J += spin_rules[i].getEnergyContribution()*home_spin*neighbor_spin;
+									}
+									if (spin_rules[i].getPhase() == 0) {
+										BEG_K += spin_rules[i].getEnergyContribution()*home_spin*neighbor_spin;
+									}
+								}
+							}
+							if (spin_rules[i].getNeighborArrangment() == "COMB") {
+								if (spin_rules[i].getPhase() == 1) {
+									BEG_J += spin_rules[i].getEnergyContribution()*home_spin*neighbor_spin;
+								}
+								if (spin_rules[i].getPhase() == 0) {
+									BEG_K += spin_rules[i].getEnergyContribution()*home_spin*neighbor_spin;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	BEG_J /= 8;
+	BEG_K /= 8;
+	vector<float> BEG_params;
+	BEG_params.push_back(BEG_J);
+	BEG_params.push_back(BEG_K);
+	return BEG_params;
+}
