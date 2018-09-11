@@ -18,7 +18,7 @@ int applyBC(int i, int inc, int limit) {
 	else { new_i = i + inc; }
 	return new_i;
 }
-void fillRuleList(vector<Rule> &list, const char * rule_file, const char * fit_file) {
+void fillRuleList(vector<Rule> &list, const char * rule_file, const char * fit_file, int offset) {
 	int order = 0;
 	string plain;
 	string phase;
@@ -91,7 +91,7 @@ void fillRuleList(vector<Rule> &list, const char * rule_file, const char * fit_f
 					}
 					phase = rule_lines[i + 5];
 					plain = rule_lines[i + 6];
-					list.push_back(Rule(name,fit_vals[rule_itter],order,plain,phase,0,neighbor_arrangment,home_species,neighbor_species ));
+					list.push_back(Rule(name,fit_vals[rule_itter+offset],order,plain,phase,0,neighbor_arrangment,home_species,neighbor_species ));
 					rule_itter += 1;
 				}
 			}

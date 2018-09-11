@@ -13,8 +13,8 @@ int main(void) {
 	int shape[3] = { 4,4,8 };
 	int species[3] = { 8,7,1 };
 	fillAtomList(atom_list, shape, species, "AUST", "FM", "RAND");
-	fillRuleList(cluster_rules, "CLUSTER_RULES.txt", "FIT.txt");
-	fillRuleList(spin_rules, "SPIN_RULES.txt", "FIT.txt");
+	fillRuleList(cluster_rules, "CLUSTER_RULES.txt", "FIT.txt",0);
+	fillRuleList(spin_rules, "SPIN_RULES.txt", "FIT.txt",cluster_rules.size());
 
 	std::mt19937_64 rng;
 	uint64_t timeSeed = std::chrono::high_resolution_clock::now().time_since_epoch().count();
