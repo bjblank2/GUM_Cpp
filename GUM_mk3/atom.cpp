@@ -131,12 +131,12 @@ int Atom::getNeighborSpin(int _neighbor, vector<Atom> atom_list) {
 	return neighbor_spin;
 }
 int Atom::getNeighborSpecies(int _neighbor, vector<Atom> atom_list) {
-	int neighbor_index = neighbors_1[_neighbor];
+	int neighbor_index = neighbors[_neighbor];
 	int neighbor_species = atom_list[neighbor_index].getSpecies();
 	return neighbor_species;
 }
 int Atom::getNeighborPhase(int _neighbor, vector<Atom> atom_list) {
-	int neighbor_index = neighbors_1[_neighbor];
+	int neighbor_index = neighbors[_neighbor];
 	int neighbor_phase = atom_list[neighbor_index].getPhase();
 	return neighbor_phase;
 }
@@ -149,7 +149,7 @@ int Atom::getNeighborOrder(int neighbor, vector<Atom> atom_list) {
 	return neighbor_order;
 }
 string Atom::getNeighborPlain(int _neighbor) {
-	string neighbor_plain = neighbor_plain_1[_neighbor];
+	string neighbor_plain = neighbor_plains[_neighbor];
 	return neighbor_plain;
 }
 

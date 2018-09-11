@@ -452,7 +452,6 @@ vector<float> calcBEGParams(int site, vector<Atom> &atom_list, vector<Rule> &clu
 				if (find(spin_rules[i].home_species.begin(), spin_rules[i].home_species.end(), home_species) != spin_rules[i].home_species.end()) {
 					if (find(spin_rules[i].neighbor_species.begin(), spin_rules[i].neighbor_species.end(), neighbor_species) != spin_rules[i].neighbor_species.end()) {
 						if (neighbor_plain == spin_rules[i].getPlain()) {
-							string bla = spin_rules[i].getNeighborArrangment();
 							if (spin_rules[i].getNeighborArrangment() == "PERM") {
 								if (atom_list[site].getSpecies() != atom_list[neighbor].getSpecies()) {
 									if (spin_rules[i].getPhase() == 1) {
@@ -494,8 +493,6 @@ float evalSiteEnergy2(float temp, int site, vector<Atom> &atom_list, vector<Rule
 		site_phase = atom_list[site].getPhase();
 		neighbor_phase = atom_list[site].getNeighborPhase(1, neighbor, atom_list);
 		site_energy += BEG_params[0] * site_phase*neighbor_phase + BEG_params[1] * (1 - site_phase ^ 2)*(1 - neighbor_phase ^ 2);
-		cout << neighbor;
-		cout << '\n';
 	}
 	//site_energy += Kb * temp * log(8)*(site_phase ^ 2);
 	// add mag contribution
