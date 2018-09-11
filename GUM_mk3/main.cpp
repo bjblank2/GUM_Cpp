@@ -34,7 +34,7 @@ int main(void) {
 	cout << "clac site energy";
 	cout << '\n';
 	timestart = std::chrono::high_resolution_clock::now().time_since_epoch().count();
-	cout << evalSiteEnergy(100, 0, atom_list, cluster_rules, spin_rules);
+	cout << evalSiteEnergy2(100, 0, atom_list, cluster_rules, spin_rules);
 	timestop = std::chrono::high_resolution_clock::now().time_since_epoch().count();
 	cout << '\n';
 	cout << '\n';

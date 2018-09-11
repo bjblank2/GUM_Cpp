@@ -411,8 +411,8 @@ vector<float> calcBEGParams(int site, vector<Atom> &atom_list, vector<Rule> &clu
 	int home_spin = atom_list[site].getSpin();
 	int home_phase = atom_list[site].getPhase();
 	int home_species = atom_list[site].getSpecies();
-	float BEG_J;
-	float BEG_K;
+	float BEG_J = 0;
+	float BEG_K = 0;
 	for (int neighbor = 0; neighbor < atom_list[site].getNumbNeighbors(); neighbor++) {
 		int neighbor_spin = atom_list[site].getNeighborSpin(neighbor, atom_list);
 		int neighbor_phase = atom_list[site].getNeighborPhase(neighbor, atom_list);
@@ -483,4 +483,21 @@ vector<float> calcBEGParams(int site, vector<Atom> &atom_list, vector<Rule> &clu
 	BEG_params.push_back(BEG_J);
 	BEG_params.push_back(BEG_K);
 	return BEG_params;
+}
+float evalSiteEnergy2(float temp, int site, vector<Atom> &atom_list, vector<Rule> &cluster_rules, vector<Rule> &spin_rules) {
+	float Kb = .000086173324;
+	float site_energy = 0;
+	int site_phase;
+	int neighbor_phase;
+	vector<float> BEG_params = calcBEGParams(site, atom_list, cluster_rules, spin_rules);
+	for (int neighbor = 0; neighbor < atom_list[site].getNumbNeighbors(1); neighbor++) {
+		site_phase = atom_list[site].getPhase();
+		neighbor_phase = atom_list[site].getNeighborPhase(1, neighbor, atom_list);
+		site_energy += BEG_params[0] * site_phase*neighbor_phase + BEG_params[1] * (1 - site_phase ^ 2)*(1 - neighbor_phase ^ 2);
+		cout << neighbor;
+		cout << '\n';
+	}
+	//site_energy += Kb * temp * log(8)*(site_phase ^ 2);
+	// add mag contribution
+	return site_energy;
 }

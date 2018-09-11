@@ -21,4 +21,5 @@ float evalSiteEnergy(float temp, int site, vector<Atom> &atom_list, vector<Rule>
 void calcBEGParams(int site, vector<Atom> &atom_list, vector<Rule> &cluster_rules, vector<Rule> &spin_rules, float BEG_params[]);
 vector<float> calcBEGParams(int site, vector<Atom> &atom_list, vector<Rule> &cluster_rules, vector<Rule> &spin_rules);
 void applyRules(int site, int neighbor, int order, vector<Atom> &atom_list, vector<Rule> & cluster_rules, vector<Rule> &spin_rules, float BEG_params[]);
+float evalSiteEnergy2(float temp, int site, vector<Atom> &atom_list, vector<Rule> &cluster_rules, vector<Rule> &spin_rules);
 #endif // !mc_h
