@@ -1,4 +1,5 @@
 #include "monte_carlo.h"
+#include <cmath>
 //double randNumb(void) {
 //	std::mt19937_64 rng;
 //	uint64_t timeSeed = std::chrono::high_resolution_clock::now().time_since_epoch().count();
@@ -318,7 +319,7 @@ float evalSiteEnergy(float temp, int site, vector<Atom> &atom_list, vector<Rule>
 		cout << neighbor;
 		cout << '\n';
 	}
-	//site_energy += Kb * temp * log(8)*(site_phase ^ 2);
+	site_energy += Kb * temp * log(8)*(pow(site_phase,2));
 	// add mag contribution
 	return site_energy;
 }
@@ -423,11 +424,11 @@ vector<float> calcBEGParams(int site, vector<Atom> &atom_list, vector<Rule> &clu
 			if (neighbor_order == cluster_rules[i].getOrder()) {
 				if (find(cluster_rules[i].home_species.begin(), cluster_rules[i].home_species.end(), home_species) != cluster_rules[i].home_species.end()) {
 					if (find(cluster_rules[i].neighbor_species.begin(), cluster_rules[i].neighbor_species.end(), neighbor_species) != cluster_rules[i].neighbor_species.end()) {
-						if (neighbor_plain == cluster_rules[i].getPlain()) {
+						if (neighbor_plain == cluster_rules[i].getPlain() || cluster_rules[i].getPlain() == "ALL") {
 							if (cluster_rules[i].getNeighborArrangment() == "PERM") {
 								if (home_species != neighbor_species) {
 									if (cluster_rules[i].getPhase() == 1) {
-										BEG_K += cluster_rules[i].getEnergyContribution();
+										BEG_J += cluster_rules[i].getEnergyContribution();
 									}
 									if (cluster_rules[i].getPhase() == 0) {
 										BEG_K += cluster_rules[i].getEnergyContribution();
@@ -451,9 +452,9 @@ vector<float> calcBEGParams(int site, vector<Atom> &atom_list, vector<Rule> &clu
 			if (neighbor_order == spin_rules[i].getOrder()) {
 				if (find(spin_rules[i].home_species.begin(), spin_rules[i].home_species.end(), home_species) != spin_rules[i].home_species.end()) {
 					if (find(spin_rules[i].neighbor_species.begin(), spin_rules[i].neighbor_species.end(), neighbor_species) != spin_rules[i].neighbor_species.end()) {
-						if (neighbor_plain == spin_rules[i].getPlain()) {
+						if (neighbor_plain == spin_rules[i].getPlain() || spin_rules[i].getPlain() == "ALL") {
 							if (spin_rules[i].getNeighborArrangment() == "PERM") {
-								if (atom_list[site].getSpecies() != atom_list[neighbor].getSpecies()) {
+								if (home_species != neighbor_species) {
 									if (spin_rules[i].getPhase() == 1) {
 										BEG_J += spin_rules[i].getEnergyContribution()*home_spin*neighbor_spin;
 									}
@@ -475,6 +476,19 @@ vector<float> calcBEGParams(int site, vector<Atom> &atom_list, vector<Rule> &clu
 				}
 			}
 		}
+
+	}
+	for (int i = 0; i < cluster_rules.size(); i++) {
+		if (cluster_rules[i].getOrder() == 0) {
+			if (find(cluster_rules[i].home_species.begin(), cluster_rules[i].home_species.end(), home_species) != cluster_rules[i].home_species.end()) {
+				if (cluster_rules[i].getPhase() == 1) {
+					BEG_J += cluster_rules[i].getEnergyContribution();
+				}
+				if (cluster_rules[i].getPhase() == 0) {
+					BEG_K += cluster_rules[i].getEnergyContribution();
+				}
+			}
+		}
 	}
 	BEG_J /= 8;
 	BEG_K /= 8;
@@ -483,18 +497,186 @@ vector<float> calcBEGParams(int site, vector<Atom> &atom_list, vector<Rule> &clu
 	BEG_params.push_back(BEG_K);
 	return BEG_params;
 }
+vector<float> calcBEGParams(void) {
+	vector<float> BEG_params;
+	float KovJ = .23;
+	float J = -.05;
+	float K = J*KovJ;
+	BEG_params.push_back(J);
+	BEG_params.push_back(K);
+	return BEG_params;
+}
 float evalSiteEnergy2(float temp, int site, vector<Atom> &atom_list, vector<Rule> &cluster_rules, vector<Rule> &spin_rules) {
 	float Kb = .000086173324;
 	float site_energy = 0;
-	int site_phase;
+	int site_phase = atom_list[site].getPhase();
 	int neighbor_phase;
+	int sig1;
+	int sig2;
 	vector<float> BEG_params = calcBEGParams(site, atom_list, cluster_rules, spin_rules);
-	for (int neighbor = 0; neighbor < atom_list[site].getNumbNeighbors(1); neighbor++) {
-		site_phase = atom_list[site].getPhase();
+	//vector<float> BEG_params = calcBEGParams();
+	for (int neighbor = 0; neighbor < 8; neighbor++) {
 		neighbor_phase = atom_list[site].getNeighborPhase(1, neighbor, atom_list);
-		site_energy += BEG_params[0] * site_phase*neighbor_phase + BEG_params[1] * (1 - site_phase ^ 2)*(1 - neighbor_phase ^ 2);
+		sig1 = 1 - pow(site_phase,2);
+		sig2 = 1 - pow(neighbor_phase,2);
+		float J = BEG_params[0];
+		float K = BEG_params[1];
+		site_energy += BEG_params[0] * site_phase*neighbor_phase + BEG_params[1] * sig1*sig2;
 	}
-	//site_energy += Kb * temp * log(8)*(site_phase ^ 2);
+	site_energy /= 8;
+	site_energy -= Kb * temp * log(2)*(1-pow(site_phase,2));
+	if (temp > 2061) {
+		if (temp < 2100) {
+			int x = 0;
+		}
+	}
 	// add mag contribution
 	return site_energy;
+}
+float evalLattice(float temp, vector<Atom> &atom_list, vector<Rule> &cluster_rules, vector<Rule> &spin_rules) {
+	float e_total = 0;
+	for (int site = 0; site < atom_list.size(); site++) {
+		e_total += evalSiteEnergy2(temp, site, atom_list, cluster_rules, spin_rules);
+	}
+	return e_total;
+}
+void runMetropolis(float passes, float temp1, float temp2, float temp_inc, vector<Atom> &atom_list, vector<Rule> &cluster_rules, vector<Rule> &spin_rules) {
+	float Kb = .000086173324;
+	float e_total = 0;
+	float e_site_old = 0;
+	float e_site_new = 0;
+	float spin_rand = 0;
+	float phase_rand = 0;
+	float keep_rand = 0;
+	int old_phase = 0;
+	int new_phase = 0;
+	int old_spin = 0;
+	int new_spin = 0;
+	int current_spin = 0;
+	int current_phase = 0;
+	bool phase_same;
+	bool spin_same;
+	float e_avg = 0;
+	float spin_avg = 0;
+	float spin_total = 0;
+	float phase_total = 0;
+	float phase_avg = 0;
+	float keep_prob = 0;
+	int numb_atoms = size(atom_list);
+	std::mt19937_64 rng;
+	uint64_t timeSeed = std::chrono::high_resolution_clock::now().time_since_epoch().count();
+	std::seed_seq ss{ uint32_t(timeSeed & 0xffffffff), uint32_t(timeSeed >> 32) };
+	rng.seed(ss);
+	std::uniform_real_distribution<double> unif(0, 1);
+	for (float temp = temp1; temp < temp2; temp += temp_inc) {
+		e_avg = 0;
+		phase_avg = 0;
+		spin_avg = 0;
+		//e_total = evalLattice(temp, atom_list, cluster_rules, spin_rules);
+		for (int i = 0; i < passes; i++) {
+			//e_total = evalLattice(temp, atom_list, cluster_rules, spin_rules);
+			e_total = 0;
+			phase_total = 0;
+			spin_total = 0;
+			for (int site = 0; site < atom_list.size(); site++) {
+				// Flip Phase
+				bool keep = false;
+				e_site_old = evalSiteEnergy2(temp, site, atom_list, cluster_rules, spin_rules);
+				//e_total -= e_site_old;
+				old_phase = atom_list[site].getPhase();
+				phase_same = true;
+				while (phase_same == true) {
+					phase_rand = unif(rng);
+					if (phase_rand <= 1.0 / 3.0) { 
+						new_phase = -1;
+					}
+					else if (phase_rand <= 2.0 / 3.0) { 
+						new_phase = 0;
+					}
+					else { 
+						new_phase = 1;
+					}
+					if (new_phase != old_phase) { phase_same = false; }
+				}
+				atom_list[site].setPhase(new_phase);
+				e_site_new = evalSiteEnergy2(temp, site, atom_list, cluster_rules, spin_rules);
+				if (e_site_new < e_site_old) {
+					//e_total += e_site_new; /////////////////////////////////////////////////////////////////////////
+					keep = true;
+				}
+				else{
+					keep_rand = unif(rng);
+					keep_prob = exp(-1 / (Kb*temp)*(e_site_new - e_site_old));
+					if (keep_rand < keep_prob) {
+						//e_total += e_site_new; /////////////////////////////////////////////////////////////////////
+						keep = false;
+					}
+					else {
+						atom_list[site].setPhase(old_phase);
+						//e_total += e_site_old; /////////////////////////////////////////////////////////////////////
+						keep = false;
+					}
+				}
+				current_phase = atom_list[site].getPhase();
+				//current_phase = abs(atom_list[site].getPhase());
+				phase_total += current_phase;
+				
+				// Flip Spin
+				e_site_old = evalSiteEnergy2(temp, site, atom_list, cluster_rules, spin_rules);
+				//e_total -= e_site_old;
+				old_spin = atom_list[site].getSpin();
+				spin_same = true;
+				while (spin_same == true) {
+					spin_rand = unif(rng);
+					if (spin_rand <= 1.0 / 3.0) {
+						new_spin = -1;
+					}
+					else if (spin_rand <= 2.0 / 3.0) {
+						new_spin = 0;
+					}
+					else {
+						new_spin = 1;
+					}
+					if (new_spin != old_spin) { spin_same = false; }
+				}
+				atom_list[site].setSpin(new_spin);
+				e_site_new = evalSiteEnergy2(temp, site, atom_list, cluster_rules, spin_rules);
+				if (e_site_new < e_site_old) {
+					e_total += e_site_new;
+					keep = true;
+				}
+				else {
+					keep_rand = unif(rng);
+					keep_prob = exp(-1 / (Kb*temp)*(e_site_new - e_site_old));
+					if (keep_rand < keep_prob) {
+						e_total += e_site_new;
+						keep = false;
+					}
+					else {
+						atom_list[site].setSpin(old_phase);
+						e_total += e_site_old;
+						keep = false;
+					}
+				}
+				current_spin = atom_list[site].getSpin();
+				//current_spin = abs(atom_list[site].getSpin());
+				spin_total += current_spin;
+			}
+			//cout << temp;
+			//cout << " , ";
+			//cout << e_total;
+			//cout << '\n';
+			phase_avg += phase_total;
+			spin_avg += spin_total;
+			e_avg += e_total;
+		}
+		cout << temp;
+		cout << " , ";
+		cout << e_avg / passes/numb_atoms;
+		cout << " , ";
+		cout << phase_avg/passes/numb_atoms;
+		cout << " , ";
+		cout << spin_avg / passes / numb_atoms;
+		cout << "\n";
+	}
 }

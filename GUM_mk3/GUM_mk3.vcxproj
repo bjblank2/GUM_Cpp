@@ -130,6 +130,11 @@
     <Text Include="FIT.txt" />
     <Text Include="SPIN_RULES.txt" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Cluster_Rules_NEW" />
+    <None Include="FittingParameters_NEW" />
+    <None Include="J_Rules_NEW" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

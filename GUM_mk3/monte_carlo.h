@@ -20,6 +20,9 @@ void fillAtomList(vector<Atom> &atom_list, int shape[3], int numb_species[3], st
 float evalSiteEnergy(float temp, int site, vector<Atom> &atom_list, vector<Rule> &cluster_rules, vector<Rule> &spin_rules);
 void calcBEGParams(int site, vector<Atom> &atom_list, vector<Rule> &cluster_rules, vector<Rule> &spin_rules, float BEG_params[]);
 vector<float> calcBEGParams(int site, vector<Atom> &atom_list, vector<Rule> &cluster_rules, vector<Rule> &spin_rules);
+vector<float> calcBEGParams(void);
 void applyRules(int site, int neighbor, int order, vector<Atom> &atom_list, vector<Rule> & cluster_rules, vector<Rule> &spin_rules, float BEG_params[]);
 float evalSiteEnergy2(float temp, int site, vector<Atom> &atom_list, vector<Rule> &cluster_rules, vector<Rule> &spin_rules);
+float evalLattice(float temp, vector<Atom> &atom_list, vector<Rule> &cluster_rules, vector<Rule> &spin_rules);
+void runMetropolis(float passes, float temp1, float temp2, float temp_inc, vector<Atom> &atom_list, vector<Rule> &cluster_rules, vector<Rule> &spin_rules);
 #endif // !mc_h

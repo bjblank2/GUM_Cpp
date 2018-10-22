@@ -35,7 +35,7 @@ void Atom::setNeighbor(int _order, string _plain, int _index) {
 	neighbor_orders.push_back(_order);
 }
 
-int Atom::getNeighborSpin(int _order, int _neighbor, vector<Atom> atom_list) {
+int Atom::getNeighborSpin(int _order, int _neighbor, vector<Atom> &atom_list) {
 	int neighbor_index;
 	int neighbor_spin;
 	if (_order == 1) {
@@ -57,7 +57,7 @@ int Atom::getNeighborSpin(int _order, int _neighbor, vector<Atom> atom_list) {
 	}
 	return neighbor_spin;
 }
-int Atom::getNeighborSpecies(int _order, int _neighbor, vector<Atom> atom_list) {
+int Atom::getNeighborSpecies(int _order, int _neighbor, vector<Atom> &atom_list) {
 	int neighbor_index;
 	int neighbor_species;
 	if (_order == 1) {
@@ -85,7 +85,7 @@ int Atom::getNumbNeighbors(int _order) {
 	else if (_order == 3) { numb_neighbors = neighbors_3.size(); }
 	return numb_neighbors;
 }
-int Atom::getNeighborPhase(int _order, int _neighbor, vector<Atom> atom_list) {
+int Atom::getNeighborPhase(int _order, int _neighbor, vector<Atom> &atom_list) {
 	int neighbor_index;
 	int neighbor_phase;
 	if (_order == 1) {
@@ -125,17 +125,17 @@ string Atom::getNeighborPlain(int _order, int _neighbor) {
 }
 
 
-int Atom::getNeighborSpin(int _neighbor, vector<Atom> atom_list) {
+int Atom::getNeighborSpin(int _neighbor, vector<Atom> &atom_list) {
 	int neighbor_index = neighbors[_neighbor];
 	int neighbor_spin = atom_list[neighbor_index].getSpin();
 	return neighbor_spin;
 }
-int Atom::getNeighborSpecies(int _neighbor, vector<Atom> atom_list) {
+int Atom::getNeighborSpecies(int _neighbor, vector<Atom> &atom_list) {
 	int neighbor_index = neighbors[_neighbor];
 	int neighbor_species = atom_list[neighbor_index].getSpecies();
 	return neighbor_species;
 }
-int Atom::getNeighborPhase(int _neighbor, vector<Atom> atom_list) {
+int Atom::getNeighborPhase(int _neighbor, vector<Atom> &atom_list) {
 	int neighbor_index = neighbors[_neighbor];
 	int neighbor_phase = atom_list[neighbor_index].getPhase();
 	return neighbor_phase;
@@ -144,7 +144,7 @@ int Atom::getNumbNeighbors() {
 	int numb_neighbors = neighbors.size();
 	return numb_neighbors;
 }
-int Atom::getNeighborOrder(int neighbor, vector<Atom> atom_list) {
+int Atom::getNeighborOrder(int neighbor, vector<Atom> &atom_list) {
 	int neighbor_order = neighbor_orders[neighbor];
 	return neighbor_order;
 }

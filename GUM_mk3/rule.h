@@ -14,9 +14,10 @@ private:
 	int coordination;
 	string neighbor_arrangment;
 	float energy_contribution;
-	string name;
+	//string name; ////////////////////////////////////////////////////////////////////////////////////////////
 
 public:
+	string name;
 	vector<int> home_species;
 	vector<int> neighbor_species;
 	Rule(void);

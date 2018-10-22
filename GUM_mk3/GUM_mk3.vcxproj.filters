@@ -50,4 +50,15 @@
       <Filter>Resource Files</Filter>
     </Text>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Cluster_Rules_NEW">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="FittingParameters_NEW">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="J_Rules_NEW">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
 </Project>
