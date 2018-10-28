@@ -105,8 +105,7 @@ int Atom::getNeighborPhase(int _order, int _neighbor, vector<Atom*> &atom_list) 
 		neighbor_phase = 1000000000;
 	}
 	return neighbor_phase;
-}
-string Atom::getNeighborPlain(int _order, int _neighbor) {
+}string Atom::getNeighborPlain(int _order, int _neighbor) {
 	string neighbor_plain;
 	if (_order == 1) {
 		neighbor_plain = neighbor_plain_1 [_neighbor];
