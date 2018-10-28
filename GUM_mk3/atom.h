@@ -33,17 +33,17 @@ public:
 	int getSpin(void);
 	int getSpecies(void);
 	int getPhase(void);
-	int getNeighborSpin(int _order, int _neighbor, vector<Atom> &atom_list);
-	int getNeighborSpecies(int _order, int _neighbor, vector<Atom> &atom_list);
-	int getNeighborPhase(int _order, int _neighbor, vector<Atom> &atom_list);
+	int getNeighborSpin(int _order, int _neighbor, vector<Atom*> &atom_list);
+	int getNeighborSpecies(int _order, int _neighbor, vector<Atom*> &atom_list);
+	int getNeighborPhase(int _order, int _neighbor, vector<Atom*> &atom_list);
 	int getNumbNeighbors(int _order);
 	string getNeighborPlain(int _order, int _neighbor);
 
-	int getNeighborSpin(int _neighbor, vector<Atom> &atom_list);
-	int getNeighborSpecies(int _neighbor, vector<Atom> &atom_list);
-	int getNeighborPhase(int _neighbor, vector<Atom> &atom_list);
+	int getNeighborSpin(int _neighbor, vector<Atom*> &atom_list);
+	int getNeighborSpecies(int _neighbor, vector<Atom*> &atom_list);
+	int getNeighborPhase(int _neighbor, vector<Atom*> &atom_list);
 	int getNumbNeighbors();
-	int getNeighborOrder(int neighbor, vector<Atom> &atom_list);
+	int getNeighborOrder(int neighbor, vector<Atom*> &atom_list);
 	string getNeighborPlain(int _neighbor);
 };
 #endif // !atom_h

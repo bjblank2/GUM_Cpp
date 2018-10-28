@@ -35,20 +35,20 @@ void Atom::setNeighbor(int _order, string _plain, int _index) {
 	neighbor_orders.push_back(_order);
 }
 
-int Atom::getNeighborSpin(int _order, int _neighbor, vector<Atom> &atom_list) {
+int Atom::getNeighborSpin(int _order, int _neighbor, vector<Atom*> &atom_list) {
 	int neighbor_index;
 	int neighbor_spin;
 	if (_order == 1) {
 		neighbor_index = neighbors_1[_neighbor];
-		neighbor_spin = atom_list[neighbor_index].getSpin();
+		neighbor_spin = atom_list[neighbor_index]->getSpin();
 	}
 	else if (_order == 2) {
 		neighbor_index = neighbors_2[_neighbor];
-		neighbor_spin = atom_list[neighbor_index].getSpin();
+		neighbor_spin = atom_list[neighbor_index]->getSpin();
 	}
 	else if (_order == 3) {
 		neighbor_index = neighbors_3[_neighbor];
-		neighbor_spin = atom_list[neighbor_index].getSpin();
+		neighbor_spin = atom_list[neighbor_index]->getSpin();
 	}
 	else {
 		cout << "error";
@@ -57,20 +57,20 @@ int Atom::getNeighborSpin(int _order, int _neighbor, vector<Atom> &atom_list) {
 	}
 	return neighbor_spin;
 }
-int Atom::getNeighborSpecies(int _order, int _neighbor, vector<Atom> &atom_list) {
+int Atom::getNeighborSpecies(int _order, int _neighbor, vector<Atom*> &atom_list) {
 	int neighbor_index;
 	int neighbor_species;
 	if (_order == 1) {
 		neighbor_index = neighbors_1[_neighbor];
-		neighbor_species = atom_list[neighbor_index].getSpecies();
+		neighbor_species = atom_list[neighbor_index]->getSpecies();
 	}
 	else if (_order == 2) {
 		neighbor_index = neighbors_2[_neighbor];
-		neighbor_species = atom_list[neighbor_index].getSpecies();
+		neighbor_species = atom_list[neighbor_index]->getSpecies();
 	}
 	else if (_order == 3) {
 		neighbor_index = neighbors_3[_neighbor];
-		neighbor_species = atom_list[neighbor_index].getSpecies();
+		neighbor_species = atom_list[neighbor_index]->getSpecies();
 	}
 	else {
 		cout << "error";
@@ -85,20 +85,20 @@ int Atom::getNumbNeighbors(int _order) {
 	else if (_order == 3) { numb_neighbors = neighbors_3.size(); }
 	return numb_neighbors;
 }
-int Atom::getNeighborPhase(int _order, int _neighbor, vector<Atom> &atom_list) {
+int Atom::getNeighborPhase(int _order, int _neighbor, vector<Atom*> &atom_list) {
 	int neighbor_index;
 	int neighbor_phase;
 	if (_order == 1) {
 		neighbor_index = neighbors_1[_neighbor];
-		neighbor_phase = atom_list[neighbor_index].getPhase();
+		neighbor_phase = atom_list[neighbor_index]->getPhase();
 	}
 	else if (_order == 2) {
 		neighbor_index = neighbors_2[_neighbor];
-		neighbor_phase = atom_list[neighbor_index].getPhase();
+		neighbor_phase = atom_list[neighbor_index]->getPhase();
 	}
 	else if (_order == 3) {
 		neighbor_index = neighbors_3[_neighbor];
-		neighbor_phase = atom_list[neighbor_index].getPhase();
+		neighbor_phase = atom_list[neighbor_index]->getPhase();
 	}
 	else {
 		cout << "error";
@@ -125,26 +125,26 @@ string Atom::getNeighborPlain(int _order, int _neighbor) {
 }
 
 
-int Atom::getNeighborSpin(int _neighbor, vector<Atom> &atom_list) {
+int Atom::getNeighborSpin(int _neighbor, vector<Atom*> &atom_list) {
 	int neighbor_index = neighbors[_neighbor];
-	int neighbor_spin = atom_list[neighbor_index].getSpin();
+	int neighbor_spin = atom_list[neighbor_index]->getSpin();
 	return neighbor_spin;
 }
-int Atom::getNeighborSpecies(int _neighbor, vector<Atom> &atom_list) {
+int Atom::getNeighborSpecies(int _neighbor, vector<Atom*> &atom_list) {
 	int neighbor_index = neighbors[_neighbor];
-	int neighbor_species = atom_list[neighbor_index].getSpecies();
+	int neighbor_species = atom_list[neighbor_index]->getSpecies();
 	return neighbor_species;
 }
-int Atom::getNeighborPhase(int _neighbor, vector<Atom> &atom_list) {
+int Atom::getNeighborPhase(int _neighbor, vector<Atom*> &atom_list) {
 	int neighbor_index = neighbors[_neighbor];
-	int neighbor_phase = atom_list[neighbor_index].getPhase();
+	int neighbor_phase = atom_list[neighbor_index]->getPhase();
 	return neighbor_phase;
 }
 int Atom::getNumbNeighbors() {
 	int numb_neighbors = neighbors.size();
 	return numb_neighbors;
 }
-int Atom::getNeighborOrder(int neighbor, vector<Atom> &atom_list) {
+int Atom::getNeighborOrder(int neighbor, vector<Atom*> &atom_list) {
 	int neighbor_order = neighbor_orders[neighbor];
 	return neighbor_order;
 }
