@@ -304,227 +304,9 @@ void fillAtomList(vector<Atom*> &atom_list, int shape[3], int numb_species[3], s
 		}
 	}
 }
-//float evalSiteEnergy(float temp, int site, vector<Atom> &atom_list, vector<Rule> &cluster_rules, vector<Rule> &spin_rules) {
-//	float Kb = .000086173324;
-//	float site_energy = 0;
-//	int site_phase;
-//	int neighbor_phase;
-//	float BEG_params[2] = { 0, 0 };
-//	cout << '\n';
-//	calcBEGParams(site, atom_list, cluster_rules, spin_rules, BEG_params);
-//	cout << BEG_params[0];
-//	cout << BEG_params[1];
-//	cout << '\n';
-//	for (int neighbor = 0; neighbor < atom_list[site].getNumbNeighbors(1); neighbor++) {
-//		site_phase = atom_list[site].getPhase();
-//		neighbor_phase = atom_list[site].getNeighborPhase(1,neighbor,atom_list);
-//		site_energy += BEG_params[0] * site_phase*neighbor_phase + BEG_params[1] * (1 - site_phase ^ 2)*(1 - neighbor_phase ^ 2);
-//		cout << neighbor;
-//		cout << '\n';
-//	}
-//	site_energy += Kb * temp * log(8)*(pow(site_phase,2));
-//	// add mag contribution
-//	return site_energy;
-//}
-//void applyRules(int site, int neighbor, int order, vector<Atom> &atom_list, vector<Rule> &cluster_rules, vector<Rule> &spin_rules, float BEG_params[]){
-//	int home_spin = atom_list[site].getSpin();
-//	int home_phase = atom_list[site].getPhase();
-//	int home_species = atom_list[site].getSpecies();
-//	int neighbor_spin = atom_list[site].getNeighborSpin(order, neighbor, atom_list);
-//	int neighbor_phase = atom_list[site].getNeighborPhase(order, neighbor, atom_list);
-//	int neighbor_species = atom_list[site].getNeighborSpecies(order, neighbor, atom_list);
-//	string neighbor_plain = atom_list[site].getNeighborPlain(order, neighbor);
-//	//cout << BEG_params[0];
-//	//cout << BEG_params[1];
-//	//cout << '\n';
-//	for (int i = 0; i < cluster_rules.size(); i++) {
-//		if (order == cluster_rules[i].getOrder()) {
-//			if (find(cluster_rules[i].home_species.begin(), cluster_rules[i].home_species.end(), home_species) != cluster_rules[i].home_species.end()) {
-//				if (find(cluster_rules[i].neighbor_species.begin(), cluster_rules[i].neighbor_species.end(), neighbor_species) != cluster_rules[i].neighbor_species.end()) {
-//					if (neighbor_plain == cluster_rules[i].getPlain()) {
-//						if (cluster_rules[i].getNeighborArrangment() == "PERM") {
-//							if (home_species != neighbor_species) {
-//								if (cluster_rules[i].getPhase() == 1) {
-//									BEG_params[0] += cluster_rules[i].getEnergyContribution();
-//								}
-//								if (cluster_rules[i].getPhase() == 0) {
-//									BEG_params[1] += cluster_rules[i].getEnergyContribution();
-//								}
-//							}
-//						}
-//						if (cluster_rules[i].getNeighborArrangment() == "COMB") {
-//							if (cluster_rules[i].getPhase() == 1) {
-//								BEG_params[0] += cluster_rules[i].getEnergyContribution();
-//							}
-//							if (cluster_rules[i].getPhase() == 0) {
-//								BEG_params[1] += cluster_rules[i].getEnergyContribution();
-//							}
-//						}
-//					}
-//				}
-//			}
-//		}
-//	}
-//	for (int i = 0; i < spin_rules.size(); i++) {
-//		if (order == spin_rules[i].getOrder()) {
-//			if (find(spin_rules[i].home_species.begin(), spin_rules[i].home_species.end(), home_species) != spin_rules[i].home_species.end()) {
-//				if (find(spin_rules[i].neighbor_species.begin(), spin_rules[i].neighbor_species.end(), neighbor_species) != spin_rules[i].neighbor_species.end()) {
-//					if (neighbor_plain== spin_rules[i].getPlain()) {
-//						string bla = spin_rules[i].getNeighborArrangment();
-//						if (spin_rules[i].getNeighborArrangment() == "PERM") {
-//							if (atom_list[site].getSpecies() != atom_list[neighbor].getSpecies()) {
-//								if (spin_rules[i].getPhase() == 1) {
-//									BEG_params[0] += spin_rules[i].getEnergyContribution()*home_spin*neighbor_spin;
-//								}
-//								if (spin_rules[i].getPhase() == 0) {
-//									BEG_params[1] += spin_rules[i].getEnergyContribution()*home_spin*neighbor_spin;
-//								}
-//							}
-//						}
-//						if (spin_rules[i].getNeighborArrangment() == "COMB") {
-//							if (spin_rules[i].getPhase() == 1) {
-//								BEG_params[0] += spin_rules[i].getEnergyContribution()*home_spin*neighbor_spin;
-//							}
-//							if (spin_rules[i].getPhase() == 0) {
-//								BEG_params[1] += spin_rules[i].getEnergyContribution()*home_spin*neighbor_spin;
-//							}
-//						}
-//					}
-//				}
-//			}
-//		}
-//	}
-//}
-//void calcBEGParams(int site, vector<Atom> &atom_list, vector<Rule> &cluster_rules, vector<Rule> &spin_rules, float BEG_params[]) {
-//	for (int i = 0; i < atom_list[site].getNumbNeighbors(1); i++) {
-//		applyRules(site, i, 1, atom_list, cluster_rules, spin_rules, BEG_params);
-//	}
-//	for (int i = 0; i < atom_list[site].getNumbNeighbors(2); i++) {
-//		applyRules(site, i, 2, atom_list, cluster_rules, spin_rules, BEG_params);
-//	}
-//	for (int i = 0; i < atom_list[site].getNumbNeighbors(3); i++) {
-//		applyRules(site, i, 3, atom_list, cluster_rules, spin_rules, BEG_params);
-//	}
-//	BEG_params[0] /= 8;
-//	BEG_params[1] /= 8;
-//	cout << '\n';
-//	cout << BEG_params[0];
-//	cout << BEG_params[1];
-//}
-vector<float> calcBEGParams(int site, vector<Atom*> &atom_list, vector<Rule*> &cluster_rules, vector<Rule*> &spin_rules) {
-	int home_spin = atom_list[site]->getSpin();
-	int home_phase = atom_list[site]->getPhase();
-	int home_species = atom_list[site]->getSpecies();
-	float BEG_J = 0;
-	float BEG_K = 0;
-	int neighbor_spin;
-	int neighbor_phase;
-	int neighbor_species;
-	int neighbor_order;
-	string neighbor_plain;
-	for (int neighbor = 0; neighbor < atom_list[site]->getNumbNeighbors(); neighbor++) {
-		neighbor_spin = atom_list[site]->getNeighborSpin(neighbor, atom_list);
-		neighbor_phase = atom_list[site]->getNeighborPhase(neighbor, atom_list);
-		neighbor_species = atom_list[site]->getNeighborSpecies(neighbor, atom_list);
-		neighbor_order = atom_list[site]->getNeighborOrder(neighbor, atom_list);
-		neighbor_plain = atom_list[site]->getNeighborPlain(neighbor);
-		for (int i = 0; i < cluster_rules.size(); i++) {
-			if (neighbor_order == cluster_rules[i]->getOrder()) {
-				if (find(cluster_rules[i]->home_species.begin(), cluster_rules[i]->home_species.end(), home_species) != cluster_rules[i]->home_species.end()) {
-					if (find(cluster_rules[i]->neighbor_species.begin(), cluster_rules[i]->neighbor_species.end(), neighbor_species) != cluster_rules[i]->neighbor_species.end()) {
-						if (neighbor_plain == cluster_rules[i]->getPlain() || cluster_rules[i]->getPlain() == "ALL") {
-							if (cluster_rules[i]->getNeighborArrangment() == "PERM") {
-								if (home_species != neighbor_species) {
-									if (cluster_rules[i]->getPhase() == 1) {
-										BEG_J += cluster_rules[i]->getEnergyContribution();
-									}
-									if (cluster_rules[i]->getPhase() == 0) {
-										BEG_K += cluster_rules[i]->getEnergyContribution();
-									}
-								}
-							}
-							if (cluster_rules[i]->getNeighborArrangment() == "COMB") {
-								if (cluster_rules[i]->getPhase() == 1) {
-									BEG_J += cluster_rules[i]->getEnergyContribution();
-								}
-								if (cluster_rules[i]->getPhase() == 0) {
-									BEG_K += cluster_rules[i]->getEnergyContribution();
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-		for (int i = 0; i < spin_rules.size(); i++) {
-			if (neighbor_order == spin_rules[i]->getOrder()) {
-				if (find(spin_rules[i]->home_species.begin(), spin_rules[i]->home_species.end(), home_species) != spin_rules[i]->home_species.end()) {
-					if (find(spin_rules[i]->neighbor_species.begin(), spin_rules[i]->neighbor_species.end(), neighbor_species) != spin_rules[i]->neighbor_species.end()) {
-						if (neighbor_plain == spin_rules[i]->getPlain() || spin_rules[i]->getPlain() == "ALL") {
-							if (spin_rules[i]->getNeighborArrangment() == "PERM") {
-								if (home_species != neighbor_species) {
-									if (spin_rules[i]->getPhase() == 1) {
-										BEG_J += spin_rules[i]->getEnergyContribution()*home_spin*neighbor_spin;
-									}
-									if (spin_rules[i]->getPhase() == 0) {
-										BEG_K += spin_rules[i]->getEnergyContribution()*home_spin*neighbor_spin;
-									}
-								}
-							}
-							if (spin_rules[i]->getNeighborArrangment() == "COMB") {
-								if (spin_rules[i]->getPhase() == 1) {
-									BEG_J += spin_rules[i]->getEnergyContribution()*home_spin*neighbor_spin;
-								}
-								if (spin_rules[i]->getPhase() == 0) {
-									BEG_K += spin_rules[i]->getEnergyContribution()*home_spin*neighbor_spin;
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-
-	}
-	for (int i = 0; i < cluster_rules.size(); i++) {
-		if (cluster_rules[i]->getOrder() == 0) {
-			if (find(cluster_rules[i]->home_species.begin(), cluster_rules[i]->home_species.end(), home_species) != cluster_rules[i]->home_species.end()) {
-				if (cluster_rules[i]->getPhase() == 1) {
-					BEG_J += cluster_rules[i]->getEnergyContribution();
-				}
-				if (cluster_rules[i]->getPhase() == 0) {
-					BEG_K += cluster_rules[i]->getEnergyContribution();
-				}
-			}
-		}
-	}
-	BEG_J /= 8;
-	BEG_K /= 8;
-	vector<float> BEG_params;
-	BEG_params.push_back(BEG_J);
-	BEG_params.push_back(BEG_K);
-	return BEG_params;
-}
-vector<float> calcBEGParams(void) {
-	vector<float> BEG_params;
-	float KovJ = .23;
-	float J = -.05;
-	float K = J*KovJ;
-	BEG_params.push_back(J);
-	BEG_params.push_back(K);
-	return BEG_params;
-}
-
-void calcBEGParams(vector<float> &J_K, vector<Atom*> &atom_list) {
-	J_K[0] = -1;
-	J_K[1] = -.51;
-	int site = 1;
-	int neighbor = 1;
-	int neighbor_spin = atom_list[site]->getNeighborSpin(neighbor, atom_list);
-	int neighbor_phase = atom_list[site]->getNeighborPhase(neighbor, atom_list);
-	int neighbor_species = atom_list[site]->getNeighborSpecies(neighbor, atom_list);
-	int neighbor_order = atom_list[site]->getNeighborOrder(neighbor, atom_list);
-	string neighbor_plain = atom_list[site]->getNeighborPlain(neighbor);
+void calcBEGParams(vector<float> &J_K) {
+	J_K[0] = -.01;
+	J_K[1] = -.0051;
 }
 void clacBEGParams(int site, vector<Atom*> &atom_list, vector<Rule*> &cluster_rules, vector<Rule*> &spin_rules, vector<float> &J_K) {
 	int home_spin = atom_list[site]->getSpin();
@@ -614,37 +396,9 @@ void clacBEGParams(int site, vector<Atom*> &atom_list, vector<Rule*> &cluster_ru
 	}
 	//J_K[0] /= 8;
 	//J_K[1] /= 8;
-	J_K[0] /= 200;
-	J_K[1] /= 200;
+	//J_K[0] /= 200;
+	//J_K[1] /= 200;
 }
-float evalSiteEnergy2(float temp, int site, vector<Atom*> &atom_list, vector<Rule*> &cluster_rules, vector<Rule*> &spin_rules) {
-	float Kb = .000086173324;
-	float site_energy = 0;
-	int site_phase = atom_list[site]->getPhase();
-	int neighbor_phase;
-	int sig1;
-	int sig2;
-	//vector<float> BEG_params = calcBEGParams(site, atom_list, cluster_rules, spin_rules);
-	vector<float> BEG_params = calcBEGParams();
-	for (int neighbor = 0; neighbor < 8; neighbor++) {
-		neighbor_phase = atom_list[site]->getNeighborPhase(1, neighbor, atom_list);
-		sig1 = 1 - pow(site_phase,2);
-		sig2 = 1 - pow(neighbor_phase,2);
-		float J = BEG_params[0];
-		float K = BEG_params[1];
-		site_energy += BEG_params[0] * site_phase*neighbor_phase + BEG_params[1] * sig1*sig2;
-	}
-	site_energy /= 8;
-	site_energy -= Kb * temp * log(8)*(1-pow(site_phase,2));
-	if (temp > 2061) {
-		if (temp < 2100) {
-			int x = 0;
-		}
-	}
-	// add mag contribution
-	return site_energy;
-}
-
 float evalSiteEnergy3(float temp, int site, vector<Atom*> &atom_list, vector<Rule*> &cluster_rules, vector<Rule*> &spin_rules, vector<float> &J_K) {
 	float Kb = .000086173324;
 	float site_energy = 0;
@@ -653,7 +407,7 @@ float evalSiteEnergy3(float temp, int site, vector<Atom*> &atom_list, vector<Rul
 	int sig1;
 	int sig2;
 	//vector<float> BEG_params = calcBEGParams(site, atom_list, cluster_rules, spin_rules);
-	calcBEGParams(J_K, atom_list);
+	calcBEGParams(J_K);
 	//clacBEGParams(site, atom_list, cluster_rules, spin_rules, J_K);
 	for (int neighbor = 0; neighbor < 8; neighbor++) {
 		neighbor_phase = atom_list[site]->getNeighborPhase(1, neighbor, atom_list);
@@ -666,11 +420,10 @@ float evalSiteEnergy3(float temp, int site, vector<Atom*> &atom_list, vector<Rul
 	// add mag contribution
 	return site_energy;
 }
-
-float evalLattice(float temp, vector<Atom*> &atom_list, vector<Rule*> &cluster_rules, vector<Rule*> &spin_rules) {
+float evalLattice(float temp, vector<Atom*> &atom_list, vector<Rule*> &cluster_rules, vector<Rule*> &spin_rules,vector<float> &J_K) {
 	float e_total = 0;
 	for (int site = 0; site < atom_list.size(); site++) {
-		e_total += evalSiteEnergy2(temp, site, atom_list, cluster_rules, spin_rules);
+		e_total += evalSiteEnergy3(temp, site, atom_list, cluster_rules, spin_rules,J_K);
 	}
 	return e_total;
 }
