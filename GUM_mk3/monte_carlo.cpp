@@ -306,7 +306,7 @@ void fillAtomList(vector<Atom*> &atom_list, int shape[3], int numb_species[3], s
 }
 void calcBEGParams(vector<float> &J_K) {
 	J_K[0] = -.01;
-	J_K[1] = -.0051;
+	J_K[1] = -.051;
 }
 void clacBEGParams(int site, vector<Atom*> &atom_list, vector<Rule*> &cluster_rules, vector<Rule*> &spin_rules, vector<float> &J_K) {
 	int home_spin = atom_list[site]->getSpin();
