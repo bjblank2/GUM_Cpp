@@ -1,5 +1,5 @@
 #include "rule.h"
-
+ 
 Rule::Rule(void) {
 	order = 10;
 }

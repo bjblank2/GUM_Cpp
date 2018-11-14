@@ -5,7 +5,7 @@
 #include <string>
 #include <vector>
 using namespace std;
-
+ 
 class Rule {
 private:
 	int order;
