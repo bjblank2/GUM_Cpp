@@ -397,9 +397,10 @@ float evalSiteEnergy3(float temp, int site, vector<Atom> &atom_list, vector<Rule
 	int site_phase = atom_list[site].getPhase();
 	int neighbor_phase;
 	int sig1;
-	int sig2;
-	//calcBEGParams(J_K);
-	clacBEGParams(site, atom_list, cluster_rules, spin_rules, J_K);
+	int sig2; 
+	// select wether to use fixed or on the fly J-K calcuations 
+	calcBEGParams(J_K); // Fixed J-K
+	//clacBEGParams(site, atom_list, cluster_rules, spin_rules, J_K);  // on the fly J-K
 	for (int neighbor = 0; neighbor < 12; neighbor++) {
 		neighbor_phase = atom_list[site].getNeighborPhase(3, neighbor, atom_list);
 		sig1 = 1 - pow(site_phase, 2);
