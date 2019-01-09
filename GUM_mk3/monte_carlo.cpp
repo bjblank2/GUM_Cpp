@@ -1,6 +1,5 @@
 #include "monte_carlo.h"
 #include <cmath>
-
 int applyBC(int i, int inc, int limit) {
 	int new_i;
 	if (i + inc >= limit) { new_i = i + inc - limit; }
@@ -136,6 +135,16 @@ void fillAtomList(vector<Atom> &atom_list, int shape[3], int numb_species[3], st
 					}
 					else {
 						if (((i + j + (k + 1) / 2) % 2) == 0) { spin = 1; }
+						else { spin = -1; }
+					}
+				}
+				else if (spin_init == "STRIPED"){
+					if (k % 2 != 0) {
+						spin = 1;
+					}
+					else
+					{
+						if ((i + j) % 2 == 0) { spin = 1; }
 						else { spin = -1; }
 					}
 				}
@@ -399,16 +408,17 @@ float evalSiteEnergy3(float temp, int site, vector<Atom> &atom_list, vector<Rule
 	int sig1;
 	int sig2; 
 	// select wether to use fixed or on the fly J-K calcuations 
-	calcBEGParams(J_K); // Fixed J-K
-	//clacBEGParams(site, atom_list, cluster_rules, spin_rules, J_K);  // on the fly J-K
-	for (int neighbor = 0; neighbor < 12; neighbor++) {
-		neighbor_phase = atom_list[site].getNeighborPhase(3, neighbor, atom_list);
+	//calcBEGParams(J_K); // Fixed J-K
+	clacBEGParams(site, atom_list, cluster_rules, spin_rules, J_K);  // on the fly J-K
+	for (int neighbor = 0; neighbor < 8; neighbor++) {
+		neighbor_phase = atom_list[site].getNeighborPhase(1, neighbor, atom_list);
 		sig1 = 1 - pow(site_phase, 2);
 		sig2 = 1 - pow(neighbor_phase, 2);
 		site_energy += J_K[0] * site_phase*neighbor_phase + J_K[1] *sig1*sig2;
 	}
 	site_energy /= 8; ////////////////////////////////////////////////////////////////////////// AAAAAAAAAAAAAAAHHHHHHHHH !!!!!!!!!! ////////////
 	site_energy -= Kb * temp * log(2)*(1 - pow(site_phase, 2));
+	site_energy -= 100;//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////FAKE!!!!!
 	// add mag contribution
 	return site_energy;
 }
