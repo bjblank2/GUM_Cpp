@@ -418,7 +418,6 @@ float evalSiteEnergy3(float temp, int site, vector<Atom> &atom_list, vector<Rule
 	}
 	site_energy /= 8; ////////////////////////////////////////////////////////////////////////// AAAAAAAAAAAAAAAHHHHHHHHH !!!!!!!!!! ////////////
 	site_energy -= Kb * temp * log(2)*(1 - pow(site_phase, 2));
-	site_energy -= 100;//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////FAKE!!!!!
 	// add mag contribution
 	return site_energy;
 }
@@ -474,9 +473,7 @@ void runMetropolis(float passes, float temp1, float temp2, float temp_inc, vecto
 		pass_avg_K = 0;
 		int flip_count = 0;
 		int flip_count2 = 0;
-		//e_total = evalLattice(temp, atom_list, cluster_rules, spin_rules);
 		for (int i = 0; i < passes; i++) {
-			//e_total = evalLattice(temp, atom_list, cluster_rules, spin_rules);
 			e_total = 0;
 			phase_total = 0;
 			spin_total = 0;
@@ -486,13 +483,6 @@ void runMetropolis(float passes, float temp1, float temp2, float temp_inc, vecto
 				// Flip Phase
 				bool keep = false;
 				e_site_old = evalSiteEnergy3(temp, site, atom_list, cluster_rules, spin_rules,J_K);
-				//e_total -= e_site_old;
-				//if (atom_list[site].getSpecies() != 0) {
-				//	cout << J_K[0];
-				//	cout << " , ";
-				//	cout << J_K[1];
-				//	cout << "\n";
-				//}
 				old_phase = atom_list[site].getPhase();
 				phase_same = true;
 				while (phase_same == true) {
@@ -511,7 +501,6 @@ void runMetropolis(float passes, float temp1, float temp2, float temp_inc, vecto
 				atom_list[site].setPhase(new_phase);
 				e_site_new = evalSiteEnergy3(temp, site, atom_list, cluster_rules, spin_rules,J_K);
  				if (e_site_new <= e_site_old) {
-					//e_total += e_site_new;
 					flip_count2 += 1;
 					keep = true;
 				}
@@ -519,13 +508,11 @@ void runMetropolis(float passes, float temp1, float temp2, float temp_inc, vecto
 					keep_rand = unif(rng);
 					keep_prob = exp(-1 / (Kb*temp)*(e_site_new - e_site_old));
 					if (keep_rand <= keep_prob) {
-						//e_total += e_site_new;
 						keep = true;
 						flip_count += 1;
 					}
 					else {
 						atom_list[site].setPhase(old_phase);
-						//e_total += e_site_old;
 						keep = false;
 					}
 				}
@@ -534,7 +521,6 @@ void runMetropolis(float passes, float temp1, float temp2, float temp_inc, vecto
 				
 				// Flip Spin
 				e_site_old = evalSiteEnergy3(temp, site, atom_list, cluster_rules, spin_rules,J_K);
-				//e_total -= e_site_old;
 				old_spin = atom_list[site].getSpin();
 				spin_same = true;
 				while (spin_same == true) {
