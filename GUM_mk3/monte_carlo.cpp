@@ -417,7 +417,8 @@ float evalSiteEnergy3(float temp, int site, vector<Atom> &atom_list, vector<Rule
 		site_energy += J_K[0] * site_phase*neighbor_phase + J_K[1] *sig1*sig2;
 	}
 	site_energy /= 8; ////////////////////////////////////////////////////////////////////////// AAAAAAAAAAAAAAAHHHHHHHHH !!!!!!!!!! ////////////
-	site_energy -= Kb * temp * log(2)*(1 - pow(site_phase, 2));
+	//site_energy -= Kb * temp * log(2)*(1 - pow(site_phase, 2));
+	site_energy -= Kb * temp * log(2)*(1-pow(site_phase, 2));
 	// add mag contribution
 	return site_energy;
 }
@@ -499,7 +500,6 @@ void runMetropolis(float passes, float temp1, float temp2, float temp_inc, vecto
 					if (new_phase != old_phase) { phase_same = false; }
 				}
 				atom_list[site].setPhase(new_phase);
-				e_site_new = evalSiteEnergy3(temp, site, atom_list, cluster_rules, spin_rules,J_K);
  				if (e_site_new <= e_site_old) {
 					flip_count2 += 1;
 					keep = true;
