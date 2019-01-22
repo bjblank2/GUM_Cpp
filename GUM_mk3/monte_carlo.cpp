@@ -1,5 +1,6 @@
 #include "monte_carlo.h"
 #include <cmath>
+
 int applyBC(int i, int inc, int limit) {
 	int new_i;
 	if (i + inc >= limit) { new_i = i + inc - limit; }
@@ -25,7 +26,7 @@ void fillRuleList(vector<Rule> &list, const char * rule_file, const char * fit_f
 	rule_list.open(rule_file);
 	ifstream fit_list;
 	fit_list.open(fit_file);
-	if (rule_list.is_open()){
+	if (rule_list.is_open()) {
 		if (fit_list.is_open()) {
 			while (getline(rule_list, rule_line))
 			{
@@ -50,7 +51,7 @@ void fillRuleList(vector<Rule> &list, const char * rule_file, const char * fit_f
 				}
 			}
 			int rule_itter = 0;
-			for (int i = 0; i < rule_lines.size(); i++){
+			for (int i = 0; i < rule_lines.size(); i++) {
 				vector<int> home_species;
 				vector<int> neighbor_species;
 				size_t found = rule_lines[i].find('#');
@@ -60,8 +61,8 @@ void fillRuleList(vector<Rule> &list, const char * rule_file, const char * fit_f
 					stringstream buffer(order_string);
 					buffer >> order;
 					neighbor_arrangment = rule_lines[i + 2];
-					istringstream iss1(rule_lines[i+3]);
-					vector<string> results1(istream_iterator<string>{iss1},istream_iterator<string>());
+					istringstream iss1(rule_lines[i + 3]);
+					vector<string> results1(istream_iterator<string>{iss1}, istream_iterator<string>());
 					for (int i = 0; i < results1.size(); i++) {
 						string home_atoms = results1[i];
 						stringstream buffer(home_atoms);
@@ -112,7 +113,7 @@ void fillAtomList(vector<Atom> &atom_list, int shape[3], int numb_species[3], st
 	uint64_t timeSeed_int = std::chrono::high_resolution_clock::now().time_since_epoch().count();
 	std::seed_seq ss_int{ uint32_t(timeSeed_int & 0xffffffff), uint32_t(timeSeed_int >> 32) };
 	rng_int.seed(ss_int);
-	std::uniform_int_distribution<int> unif_int(0, numb_atoms-1);
+	std::uniform_int_distribution<int> unif_int(0, numb_atoms - 1);
 	int id = 0;
 	for (int i = 0; i < shape[0]; i++) {
 		for (int j = 0; j < shape[1]; j++) {
@@ -138,13 +139,13 @@ void fillAtomList(vector<Atom> &atom_list, int shape[3], int numb_species[3], st
 						else { spin = -1; }
 					}
 				}
-				else if (spin_init == "STRIPED"){
-					if (k % 2 != 0) {
-						spin = 1;
-					}
-					else
-					{
+				else if (spin_init == "STRIPED") {
+					if (k % 2 == 0) {
 						if ((i + j) % 2 == 0) { spin = 1; }
+						else { spin = -1; }
+					}
+					else {
+						if (((i + j)% 2) == 0) { spin = 1; }
 						else { spin = -1; }
 					}
 				}
@@ -215,28 +216,28 @@ void fillAtomList(vector<Atom> &atom_list, int shape[3], int numb_species[3], st
 				for (int n_i = 0; n_i < shape[0]; n_i++) {
 					for (int n_j = 0; n_j < shape[1]; n_j++) {
 						for (int n_k = 0; n_k < shape[2]; n_k++) {
-							if (n_i == i && n_j == j && n_k == applyBC(k, 1, shape[2])){
+							if (n_i == i && n_j == j && n_k == applyBC(k, 1, shape[2])) {
 								atom_list[atom_index].setNeighbor(1, "OUT", neighbor_index);
 							}
 							if (n_i == i && n_j == j && n_k == applyBC(k, -1, shape[2])) {
 								atom_list[atom_index].setNeighbor(1, "OUT", neighbor_index);
 							}
-							if (n_i == applyBC(i,-1,shape[0]) && n_j == j && n_k == applyBC(k, 1, shape[2])) {
+							if (n_i == applyBC(i, -1, shape[0]) && n_j == j && n_k == applyBC(k, 1, shape[2])) {
 								atom_list[atom_index].setNeighbor(1, "OUT", neighbor_index);
 							}
 							if (n_i == applyBC(i, -1, shape[0]) && n_j == j && n_k == applyBC(k, -1, shape[2])) {
 								atom_list[atom_index].setNeighbor(1, "OUT", neighbor_index);
 							}
-							if (n_i == i && n_j == applyBC(j,-1,shape[1]) && n_k == applyBC(k, 1, shape[2])) {
+							if (n_i == i && n_j == applyBC(j, -1, shape[1]) && n_k == applyBC(k, 1, shape[2])) {
 								atom_list[atom_index].setNeighbor(1, "OUT", neighbor_index);
 							}
-							if (n_i == i && n_j == applyBC(j,-1,shape[1]) && n_k == applyBC(k, -1, shape[2])) {
+							if (n_i == i && n_j == applyBC(j, -1, shape[1]) && n_k == applyBC(k, -1, shape[2])) {
 								atom_list[atom_index].setNeighbor(1, "OUT", neighbor_index);
 							}
-							if (n_i == applyBC(i, -1, shape[0]) && n_j == applyBC(j,-1,shape[1]) && n_k == applyBC(k, 1, shape[2])) {
+							if (n_i == applyBC(i, -1, shape[0]) && n_j == applyBC(j, -1, shape[1]) && n_k == applyBC(k, 1, shape[2])) {
 								atom_list[atom_index].setNeighbor(1, "OUT", neighbor_index);
 							}
-							if (n_i == applyBC(i, -1, shape[0]) && n_j == applyBC(j,-1,shape[1]) && n_k == applyBC(k, -1, shape[2])) {
+							if (n_i == applyBC(i, -1, shape[0]) && n_j == applyBC(j, -1, shape[1]) && n_k == applyBC(k, -1, shape[2])) {
 								atom_list[atom_index].setNeighbor(1, "OUT", neighbor_index);
 							}
 							if (n_i == applyBC(i, 1, shape[0]) && n_j == j && n_k == k) {
@@ -245,43 +246,43 @@ void fillAtomList(vector<Atom> &atom_list, int shape[3], int numb_species[3], st
 							if (n_i == applyBC(i, -1, shape[0]) && n_j == j && n_k == k) {
 								atom_list[atom_index].setNeighbor(2, "IN", neighbor_index);
 							}
-							if (n_i == i && n_j == applyBC(j,1,shape[1]) && n_k == k) {
+							if (n_i == i && n_j == applyBC(j, 1, shape[1]) && n_k == k) {
 								atom_list[atom_index].setNeighbor(2, "IN", neighbor_index);
 							}
-							if (n_i == i && n_j == applyBC(j,-1,shape[1]) && n_k == k) {
+							if (n_i == i && n_j == applyBC(j, -1, shape[1]) && n_k == k) {
 								atom_list[atom_index].setNeighbor(2, "IN", neighbor_index);
 							}
-							if (n_i == i && n_j == j && n_k == applyBC(k,2,shape[2])) {
+							if (n_i == i && n_j == j && n_k == applyBC(k, 2, shape[2])) {
 								atom_list[atom_index].setNeighbor(2, "OUT", neighbor_index);
 							}
-							if (n_i == i && n_j == j && n_k == applyBC(k,-2,shape[2])) {
+							if (n_i == i && n_j == j && n_k == applyBC(k, -2, shape[2])) {
 								atom_list[atom_index].setNeighbor(2, "OUT", neighbor_index);
 							}
-							if (n_i == applyBC(i, 1, shape[0]) && n_j == j && n_k == applyBC(k,2,shape[2])) {
+							if (n_i == applyBC(i, 1, shape[0]) && n_j == j && n_k == applyBC(k, 2, shape[2])) {
 								atom_list[atom_index].setNeighbor(3, "OUT", neighbor_index);
 							}
-							if (n_i == applyBC(i, 1, shape[0]) && n_j == j && n_k == applyBC(k,-2,shape[2])) {
+							if (n_i == applyBC(i, 1, shape[0]) && n_j == j && n_k == applyBC(k, -2, shape[2])) {
 								atom_list[atom_index].setNeighbor(3, "OUT", neighbor_index);
 							}
-							if (n_i == applyBC(i, -1, shape[0]) && n_j == j && n_k == applyBC(k,2,shape[2])) {
+							if (n_i == applyBC(i, -1, shape[0]) && n_j == j && n_k == applyBC(k, 2, shape[2])) {
 								atom_list[atom_index].setNeighbor(3, "OUT", neighbor_index);
 							}
-							if (n_i == applyBC(i, -1, shape[0]) && n_j == j && n_k == applyBC(k,-2,shape[2])) {
+							if (n_i == applyBC(i, -1, shape[0]) && n_j == j && n_k == applyBC(k, -2, shape[2])) {
 								atom_list[atom_index].setNeighbor(3, "OUT", neighbor_index);
 							}
-							if (n_i == i && n_j == applyBC(j,1,shape[1]) && n_k == applyBC(k,2,shape[2])) {
+							if (n_i == i && n_j == applyBC(j, 1, shape[1]) && n_k == applyBC(k, 2, shape[2])) {
 								atom_list[atom_index].setNeighbor(3, "OUT", neighbor_index);
 							}
-							if (n_i == i && n_j == applyBC(j,1,shape[1]) && n_k == applyBC(k,-2,shape[2])) {
+							if (n_i == i && n_j == applyBC(j, 1, shape[1]) && n_k == applyBC(k, -2, shape[2])) {
 								atom_list[atom_index].setNeighbor(3, "OUT", neighbor_index);
 							}
-							if (n_i == i && n_j == applyBC(j,-1,shape[1]) && n_k == applyBC(k,2,shape[2])) {
+							if (n_i == i && n_j == applyBC(j, -1, shape[1]) && n_k == applyBC(k, 2, shape[2])) {
 								atom_list[atom_index].setNeighbor(3, "OUT", neighbor_index);
 							}
-							if (n_i == i && n_j == applyBC(j,-1,shape[1]) && n_k == applyBC(k,-2,shape[2])) {
+							if (n_i == i && n_j == applyBC(j, -1, shape[1]) && n_k == applyBC(k, -2, shape[2])) {
 								atom_list[atom_index].setNeighbor(3, "OUT", neighbor_index);
 							}
-							if (n_i == applyBC(i,1,shape[0]) && n_j == applyBC(j, 1, shape[1]) && n_k == k) {
+							if (n_i == applyBC(i, 1, shape[0]) && n_j == applyBC(j, 1, shape[1]) && n_k == k) {
 								atom_list[atom_index].setNeighbor(3, "IN", neighbor_index);
 							}
 							if (n_i == applyBC(i, 1, shape[0]) && n_j == applyBC(j, -1, shape[1]) && n_k == k) {
@@ -394,19 +395,17 @@ void clacBEGParams(int site, vector<Atom> &atom_list, vector<Rule> &cluster_rule
 			}
 		}
 	}
-	//J_K[0] += 7;
-	//J_K[1] += 7;
-	//J_K[0] /= 200;
-	//J_K[1] /= 200;
 }
 
 float evalSiteEnergy3(float temp, int site, vector<Atom> &atom_list, vector<Rule> &cluster_rules, vector<Rule> &spin_rules, vector<float> &J_K) {
 	float Kb = 0.000086173324;
+	float uB = 0.00005788381801;
 	float site_energy = 0;
 	int site_phase = atom_list[site].getPhase();
+	int site_spin = atom_list[site].getSpin();
 	int neighbor_phase;
 	int sig1;
-	int sig2; 
+	int sig2;
 	// select wether to use fixed or on the fly J-K calcuations 
 	//calcBEGParams(J_K); // Fixed J-K
 	clacBEGParams(site, atom_list, cluster_rules, spin_rules, J_K);  // on the fly J-K
@@ -414,19 +413,19 @@ float evalSiteEnergy3(float temp, int site, vector<Atom> &atom_list, vector<Rule
 		neighbor_phase = atom_list[site].getNeighborPhase(1, neighbor, atom_list);
 		sig1 = 1 - pow(site_phase, 2);
 		sig2 = 1 - pow(neighbor_phase, 2);
-		site_energy += J_K[0] * site_phase*neighbor_phase + J_K[1] *sig1*sig2;
+		site_energy += J_K[0] * site_phase*neighbor_phase + J_K[1] * sig1*sig2;
 	}
 	site_energy /= 8; ////////////////////////////////////////////////////////////////////////// AAAAAAAAAAAAAAAHHHHHHHHH !!!!!!!!!! ////////////
-	//site_energy -= Kb * temp * log(2)*(1 - pow(site_phase, 2));
-	site_energy -= Kb * temp * log(2)*(1-pow(site_phase, 2));
-	// add mag contribution
+	site_energy -= Kb * temp * log(2)*(1 - pow(site_phase, 2));
+	// add mag contribution Mn=2.7uB Ni=.6 In=
+	// site_energy -= 
 	return site_energy;
 }
 
-float evalLattice(float temp, vector<Atom> &atom_list, vector<Rule> &cluster_rules, vector<Rule> &spin_rules,vector<float> &J_K) {
+float evalLattice(float temp, vector<Atom> &atom_list, vector<Rule> &cluster_rules, vector<Rule> &spin_rules, vector<float> &J_K) {
 	float e_total = 0;
 	for (int site = 0; site < atom_list.size(); site++) {
-		e_total += evalSiteEnergy3(temp, site, atom_list, cluster_rules, spin_rules,J_K);
+		e_total += evalSiteEnergy3(temp, site, atom_list, cluster_rules, spin_rules, J_K);
 	}
 	return e_total;
 }
@@ -449,9 +448,13 @@ void runMetropolis(float passes, float temp1, float temp2, float temp_inc, vecto
 	bool spin_same;
 	float e_avg = 0;
 	float spin_avg = 0;
-	float spin_total = 0;
+	int spin_total = 0;
 	float phase_total = 0;
+	float phase_total0 = 0;
+	float phase_total1 = 0;
 	float phase_avg = 0;
+	float phase_avg0 = 0;
+	float phase_avg1 = 0;
 	float keep_prob = 0;
 	int numb_atoms = size(atom_list);
 	float current_J;
@@ -469,6 +472,8 @@ void runMetropolis(float passes, float temp1, float temp2, float temp_inc, vecto
 	for (float temp = temp1; temp < temp2; temp += temp_inc) {
 		e_avg = 0;
 		phase_avg = 0;
+		phase_avg0 = 0;
+		phase_avg1 = 0;
 		spin_avg = 0;
 		pass_avg_J = 0;
 		pass_avg_K = 0;
@@ -477,34 +482,45 @@ void runMetropolis(float passes, float temp1, float temp2, float temp_inc, vecto
 		for (int i = 0; i < passes; i++) {
 			e_total = 0;
 			phase_total = 0;
+			phase_total0 = 0;
+			phase_total1 = 0;
 			spin_total = 0;
 			atom_avg_J = 0;
 			atom_avg_K = 0;
 			for (int site = 0; site < atom_list.size(); site++) {
 				// Flip Phase
 				bool keep = false;
-				e_site_old = evalSiteEnergy3(temp, site, atom_list, cluster_rules, spin_rules,J_K);
+				e_site_old = evalSiteEnergy3(temp, site, atom_list, cluster_rules, spin_rules, J_K);
+				current_J = J_K[0];
+				current_K = J_K[1];
+				//if (atom_list[site].getSpecies() != 0) {
+				//	cout << J_K[0];
+				//	cout << " , ";
+				//	cout << J_K[1];
+				//	cout << "\n";
+				//}
 				old_phase = atom_list[site].getPhase();
 				phase_same = true;
 				while (phase_same == true) {
 					phase_rand = unif(rng);
-					if (phase_rand <= 1.0 / 3.0) { 
+					if (phase_rand <= 1.0 / 3.0) {
 						new_phase = -1;
 					}
-					else if (phase_rand <= 2.0 / 3.0) { 
+					else if (phase_rand <= 2.0 / 3.0) {
 						new_phase = 0;
 					}
-					else { 
+					else {
 						new_phase = 1;
 					}
 					if (new_phase != old_phase) { phase_same = false; }
 				}
 				atom_list[site].setPhase(new_phase);
- 				if (e_site_new <= e_site_old) {
+				e_site_new = evalSiteEnergy3(temp, site, atom_list, cluster_rules, spin_rules, J_K);
+				if (e_site_new <= e_site_old) {
 					flip_count2 += 1;
 					keep = true;
 				}
-				else{
+				else {
 					keep_rand = unif(rng);
 					keep_prob = exp(-1 / (Kb*temp)*(e_site_new - e_site_old));
 					if (keep_rand <= keep_prob) {
@@ -518,9 +534,15 @@ void runMetropolis(float passes, float temp1, float temp2, float temp_inc, vecto
 				}
 				current_phase = atom_list[site].getPhase();
 				phase_total += current_phase;
-				
+				if (atom_list[site].getSpecies() == 0) {
+					phase_total0 += abs(current_phase);
+				}
+				if (atom_list[site].getSpecies() == 1) {
+					phase_total1 += abs(current_phase);
+				}
+
 				// Flip Spin
-				e_site_old = evalSiteEnergy3(temp, site, atom_list, cluster_rules, spin_rules,J_K);
+				e_site_old = evalSiteEnergy3(temp, site, atom_list, cluster_rules, spin_rules, J_K);
 				old_spin = atom_list[site].getSpin();
 				spin_same = true;
 				while (spin_same == true) {
@@ -537,7 +559,7 @@ void runMetropolis(float passes, float temp1, float temp2, float temp_inc, vecto
 					if (new_spin != old_spin) { spin_same = false; }
 				}
 				atom_list[site].setSpin(new_spin);
-				e_site_new = evalSiteEnergy3(temp, site, atom_list, cluster_rules, spin_rules,J_K);
+				e_site_new = evalSiteEnergy3(temp, site, atom_list, cluster_rules, spin_rules, J_K);
 				if (e_site_new < e_site_old) {
 					e_total += e_site_new;
 					keep = true;
@@ -555,15 +577,23 @@ void runMetropolis(float passes, float temp1, float temp2, float temp_inc, vecto
 						keep = false;
 					}
 				}
-				current_J = J_K[0];
-				current_K = J_K[1];
 				current_spin = atom_list[site].getSpin();
 				//current_spin = abs(atom_list[site].getSpin());
-				spin_total += current_spin;
+				//spin_total += atom_list[site].getSpin();
+				cout << atom_list[site].getSpin();
+				for (int neighbor = 0; neighbor < 6; neighbor++) {
+					spin_total += atom_list[site].getSpin() * atom_list[site].getNeighborSpin(2, neighbor, atom_list);
+					cout << " , ";
+					cout << atom_list[site].getNeighborSpin(2, neighbor, atom_list);
+					cout << " , ";
+				}
+				cout << "\n";
 				atom_avg_J += current_J;
 				atom_avg_K += current_K;
 			}
 			phase_avg += phase_total;
+			phase_avg0 += phase_total0;
+			phase_avg1 += phase_total1;
 			spin_avg += spin_total;
 			e_avg += e_total;
 			pass_avg_J += atom_avg_J;
@@ -571,11 +601,15 @@ void runMetropolis(float passes, float temp1, float temp2, float temp_inc, vecto
 		}
 		cout << temp;
 		cout << " , ";
-		cout << e_avg / passes/numb_atoms*16;
+		cout << e_avg / passes / numb_atoms * 16;
 		cout << " , ";
 		cout << phase_avg / passes / numb_atoms;
 		cout << " , ";
-		cout << spin_avg / passes / numb_atoms;
+		cout << phase_avg0 / passes / (numb_atoms*.5);
+		cout << " , ";
+		cout << phase_avg1 / passes / (numb_atoms*.5);
+		cout << " , ";
+		cout << spin_avg / passes / numb_atoms/6;
 		cout << " , ";
 		cout << pass_avg_J / passes / numb_atoms;
 		cout << " , ";
