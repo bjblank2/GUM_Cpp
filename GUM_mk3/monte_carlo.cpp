@@ -125,9 +125,9 @@ void fillAtomList(vector<Atom> &atom_list, int shape[3], int numb_species[3], st
 					spin = 1;
 				}
 				else if (spin_init == "RAND") {
-					if (spin_rand <= 1 / 3) { spin = -1; }
-					else if (spin_rand <= 2 / 3) { spin = 0; }
-					else { spin = 1; }
+					if (spin_rand >= (.6666666666666666)) { spin = -1; }
+					if (spin_rand >= (.3333333333333333) and spin_rand < (.6666666666666666)) { spin = 0; }
+					if (spin_rand < (.3333333333333333)) { spin = 1; }
 				}
 				else if (spin_init == "AFM") {
 					if (k % 2 == 0) {
@@ -139,24 +139,14 @@ void fillAtomList(vector<Atom> &atom_list, int shape[3], int numb_species[3], st
 						else { spin = -1; }
 					}
 				}
-				else if (spin_init == "STRIPED") {
-					if (k % 2 == 0) {
-						if ((i + j) % 2 == 0) { spin = 1; }
-						else { spin = -1; }
-					}
-					else {
-						if (((i + j)% 2) == 0) { spin = 1; }
-						else { spin = -1; }
-					}
-				}
 				else { spin = 1; }
 				// Set atom phase
 				if (phase_init == "AUST") { phase = 0; }
 				else if (phase_init == "MART") { phase = 1; }
 				else if (phase_init == "RAND") {
-					if (phase_rand <= 1 / 3) { phase = -1; }
-					else if (phase_rand <= 2 / 3) { phase = 0; }
-					else { phase = 1; }
+					if (phase_rand >= (.6666666666666666)) { phase = -1; }
+					if (phase_rand >= (.3333333333333333) and phase_rand < (.6666666666666666)) { phase = 0; }
+					if (phase_rand < (.3333333333333333)) { phase = 1; }
 				}
 				else { phase = 1; }
 				// Set atom species
@@ -305,8 +295,8 @@ void fillAtomList(vector<Atom> &atom_list, int shape[3], int numb_species[3], st
 }
 
 void calcBEGParams(vector<float> &J_K) {
-	J_K[0] = -.005;
-	J_K[1] = -.00115;
+	J_K[0] = -.5;
+	J_K[1] = -.4;
 }
 
 void clacBEGParams(int site, vector<Atom> &atom_list, vector<Rule> &cluster_rules, vector<Rule> &spin_rules, vector<float> &J_K) {
@@ -395,15 +385,20 @@ void clacBEGParams(int site, vector<Atom> &atom_list, vector<Rule> &cluster_rule
 			}
 		}
 	}
+	//J_K[0] += 7;
+	//J_K[1] += 7;
+	//J_K[0] /= 200;
+	//J_K[1] /= 200;
 }
 
 float evalSiteEnergy3(float temp, int site, vector<Atom> &atom_list, vector<Rule> &cluster_rules, vector<Rule> &spin_rules, vector<float> &J_K) {
 	float Kb = 0.000086173324;
-	float uB = 0.00005788381801;
+	float uB = .000057883818012;
+	float H = 0;
 	float site_energy = 0;
 	int site_phase = atom_list[site].getPhase();
-	int site_spin = atom_list[site].getSpin();
 	int neighbor_phase;
+	int site_spin = atom_list[site].getSpin();
 	int sig1;
 	int sig2;
 	// select wether to use fixed or on the fly J-K calcuations 
@@ -417,8 +412,10 @@ float evalSiteEnergy3(float temp, int site, vector<Atom> &atom_list, vector<Rule
 	}
 	site_energy /= 8; ////////////////////////////////////////////////////////////////////////// AAAAAAAAAAAAAAAHHHHHHHHH !!!!!!!!!! ////////////
 	site_energy -= Kb * temp * log(2)*(1 - pow(site_phase, 2));
-	// add mag contribution Mn=2.7uB Ni=.6 In=
-	// site_energy -= 
+	site_energy -= 3 * uB*H*site_spin;
+	// add mag contribution
+
+
 	return site_energy;
 }
 
@@ -448,65 +445,62 @@ void runMetropolis(float passes, float temp1, float temp2, float temp_inc, vecto
 	bool spin_same;
 	float e_avg = 0;
 	float spin_avg = 0;
-	int spin_total = 0;
+	float spin_total = 0;
+	float spin_avg2 = 0;
+	float spin_total2 = 0;
 	float phase_total = 0;
-	float phase_total0 = 0;
-	float phase_total1 = 0;
 	float phase_avg = 0;
-	float phase_avg0 = 0;
-	float phase_avg1 = 0;
 	float keep_prob = 0;
 	int numb_atoms = size(atom_list);
 	float current_J;
 	float current_K;
+	float new_J;
+	float new_K;
 	float atom_avg_J;
 	float atom_avg_K;
 	float pass_avg_J;
 	float pass_avg_K;
+	int flip_count = 0;
+	int flip_count2 = 0;
 	vector<float> J_K = { 0,0 };
 	std::mt19937_64 rng;
 	uint64_t timeSeed = std::chrono::high_resolution_clock::now().time_since_epoch().count();
 	std::seed_seq ss{ uint32_t(timeSeed & 0xffffffff), uint32_t(timeSeed >> 32) };
 	rng.seed(ss);
 	std::uniform_real_distribution<double> unif(0, 1);
+	cout << evalLattice(temp1, atom_list, cluster_rules, spin_rules, J_K);
+	cout << "\n";
 	for (float temp = temp1; temp < temp2; temp += temp_inc) {
 		e_avg = 0;
 		phase_avg = 0;
-		phase_avg0 = 0;
-		phase_avg1 = 0;
 		spin_avg = 0;
+		spin_avg2 = 0;
 		pass_avg_J = 0;
 		pass_avg_K = 0;
-		int flip_count = 0;
-		int flip_count2 = 0;
+		flip_count = 0;
+		flip_count2 = 0;
+		//e_total = evalLattice(temp, atom_list, cluster_rules, spin_rules);
 		for (int i = 0; i < passes; i++) {
+			//e_total = evalLattice(temp, atom_list, cluster_rules, spin_rules);
 			e_total = 0;
 			phase_total = 0;
-			phase_total0 = 0;
-			phase_total1 = 0;
 			spin_total = 0;
+			spin_total2 = 0;
 			atom_avg_J = 0;
 			atom_avg_K = 0;
 			for (int site = 0; site < atom_list.size(); site++) {
+				//cout << atom_list[site].getSpecies();
 				// Flip Phase
 				bool keep = false;
 				e_site_old = evalSiteEnergy3(temp, site, atom_list, cluster_rules, spin_rules, J_K);
-				current_J = J_K[0];
-				current_K = J_K[1];
-				//if (atom_list[site].getSpecies() != 0) {
-				//	cout << J_K[0];
-				//	cout << " , ";
-				//	cout << J_K[1];
-				//	cout << "\n";
-				//}
 				old_phase = atom_list[site].getPhase();
 				phase_same = true;
 				while (phase_same == true) {
 					phase_rand = unif(rng);
-					if (phase_rand <= 1.0 / 3.0) {
+					if (phase_rand <= 0.3333333333333333) {
 						new_phase = -1;
 					}
-					else if (phase_rand <= 2.0 / 3.0) {
+					else if (phase_rand <= 0.6666666666666666) {
 						new_phase = 0;
 					}
 					else {
@@ -534,23 +528,19 @@ void runMetropolis(float passes, float temp1, float temp2, float temp_inc, vecto
 				}
 				current_phase = atom_list[site].getPhase();
 				phase_total += current_phase;
-				if (atom_list[site].getSpecies() == 0) {
-					phase_total0 += abs(current_phase);
-				}
-				if (atom_list[site].getSpecies() == 1) {
-					phase_total1 += abs(current_phase);
-				}
 
 				// Flip Spin
 				e_site_old = evalSiteEnergy3(temp, site, atom_list, cluster_rules, spin_rules, J_K);
+				current_J = J_K[0];
+				current_K = J_K[1];
 				old_spin = atom_list[site].getSpin();
 				spin_same = true;
 				while (spin_same == true) {
 					spin_rand = unif(rng);
-					if (spin_rand <= 1.0 / 3.0) {
+					if (spin_rand <= 0.3333333333333333) {
 						new_spin = -1;
 					}
-					else if (spin_rand <= 2.0 / 3.0) {
+					else if (spin_rand <= 0.6666666666666666) {
 						new_spin = 0;
 					}
 					else {
@@ -560,56 +550,66 @@ void runMetropolis(float passes, float temp1, float temp2, float temp_inc, vecto
 				}
 				atom_list[site].setSpin(new_spin);
 				e_site_new = evalSiteEnergy3(temp, site, atom_list, cluster_rules, spin_rules, J_K);
-				if (e_site_new < e_site_old) {
+				new_J = J_K[0];
+				new_K = J_K[1];
+				if (e_site_new <= e_site_old) {
 					e_total += e_site_new;
+					flip_count2 += 1;
 					keep = true;
+					atom_avg_J += new_J;
+					atom_avg_K += new_K;
 				}
 				else {
 					keep_rand = unif(rng);
 					keep_prob = exp(-1 / (Kb*temp)*(e_site_new - e_site_old));
 					if (keep_rand < keep_prob) {
 						e_total += e_site_new;
+						flip_count += 1;
 						keep = true;
+						atom_avg_J += new_J;
+						atom_avg_K += new_K;
 					}
 					else {
 						atom_list[site].setSpin(old_spin);
 						e_total += e_site_old;
 						keep = false;
+						atom_avg_J += current_J;
+						atom_avg_K += current_K;
 					}
 				}
-				current_spin = atom_list[site].getSpin();
-				//current_spin = abs(atom_list[site].getSpin());
-				//spin_total += atom_list[site].getSpin();
-				cout << atom_list[site].getSpin();
-				for (int neighbor = 0; neighbor < 6; neighbor++) {
-					spin_total += atom_list[site].getSpin() * atom_list[site].getNeighborSpin(2, neighbor, atom_list);
-					cout << " , ";
-					cout << atom_list[site].getNeighborSpin(2, neighbor, atom_list);
-					cout << " , ";
+ 				current_spin = atom_list[site].getSpin();
+				//cout << atom_list[site].getSpecies();
+				//cout << "[";
+				//cout << current_spin;
+				//cout << "]";
+				spin_total2 += current_spin;
+				if (atom_list[site].getSpecies() != 3) {
+					for (int neighbors = 0; neighbors < 6; neighbors++) {
+						spin_total += atom_list[site].getSpin() * atom_list[site].getNeighborSpin(2, neighbors, atom_list);
+						//cout << " , ";
+						//cout << atom_list[site].getNeighborSpecies(2, neighbors, atom_list);
+					}
 				}
-				cout << "\n";
-				atom_avg_J += current_J;
-				atom_avg_K += current_K;
+				//cout << "\n";
+				//current_spin = abs(atom_list[site].getSpin());
+				//spin_total += current_spin;
 			}
 			phase_avg += phase_total;
-			phase_avg0 += phase_total0;
-			phase_avg1 += phase_total1;
 			spin_avg += spin_total;
+			spin_avg2 += spin_total2;
 			e_avg += e_total;
 			pass_avg_J += atom_avg_J;
 			pass_avg_K += atom_avg_K;
 		}
 		cout << temp;
 		cout << " , ";
-		cout << e_avg / passes / numb_atoms * 16;
+		cout << e_avg / passes / numb_atoms * 16;// +-104.33856560606262;
 		cout << " , ";
 		cout << phase_avg / passes / numb_atoms;
 		cout << " , ";
-		cout << phase_avg0 / passes / (numb_atoms*.5);
+		cout << spin_avg / passes / numb_atoms / 6 * 2;
 		cout << " , ";
-		cout << phase_avg1 / passes / (numb_atoms*.5);
-		cout << " , ";
-		cout << spin_avg / passes / numb_atoms/6;
+		cout << spin_avg2 / passes / numb_atoms;
 		cout << " , ";
 		cout << pass_avg_J / passes / numb_atoms;
 		cout << " , ";

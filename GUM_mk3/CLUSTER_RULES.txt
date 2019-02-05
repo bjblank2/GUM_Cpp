@@ -2,7 +2,7 @@
 0
 COMB
 0
-0
+9
 aust
 ALL
 1
@@ -11,7 +11,7 @@ ALL
 0
 COMB
 1
-1
+9
 aust
 ALL
 1
@@ -20,7 +20,7 @@ ALL
 0
 COMB
 2
-2
+9
 aust
 ALL
 1
@@ -29,7 +29,7 @@ ALL
 0
 COMB
 0
-0
+9
 mart
 ALL
 1
@@ -38,7 +38,7 @@ ALL
 0
 COMB
 1
-1
+9
 mart
 ALL
 1
@@ -47,7 +47,7 @@ ALL
 0
 COMB
 2
-2
+9
 mart
 ALL
 1
@@ -331,6 +331,24 @@ aust
 ALL
 12
 
+# 3NN-NiNi-Aust
+3
+COMB
+0
+0
+aust
+ALL
+12
+
+# 3NN-NiIn-Aust
+3
+COMB
+0 2
+0 2
+aust
+ALL
+12
+
 # 3NN-MnIn-Aust
 3
 PERM
@@ -349,11 +367,29 @@ mart
 IN
 4
 
+# 3NN-NiNi-Mart-IN
+3
+COMB
+0
+0
+mart
+IN
+4
+
 # 3NN-MnMn-Mart-OUT
 3
 COMB
 1
 1
+mart
+OUT
+8
+
+# 3NN-NiNi-Mart-OUT
+3
+COMB
+0
+0
 mart
 OUT
 8
@@ -372,6 +408,24 @@ IN
 PERM
 1 2
 1 2
+mart
+OUT
+8
+
+# 3NN-NiIn-Mart-IN
+3
+PERM
+0 2
+0 2
+mart
+IN
+4
+
+# 3NN-NiIn-Mart-OUT
+3
+PERM
+0 2
+0 2
 mart
 OUT
 8
