@@ -133,24 +133,6 @@ aust
 ALL
 6
 
-# mag-3NN-MnMn-Aust-IN
-3
-COMB
-1
-1
-aust
-IN
-4
-
-# mag-3NN-MnMn-Aust-OUT
-3
-COMB
-1
-1
-aust
-OUT
-8
-
 # mag-3NN-MnMn-Mart-IN
 3
 COMB
@@ -160,6 +142,24 @@ mart
 IN
 4
 
+#mag-3NN-NiNi-Mart-IN
+3
+COMB
+0
+0
+mart
+IN
+4
+
+#mag-3NN-NiNi-Mart-OUT
+3
+COMB
+0
+0
+mart
+OUT
+8
+
 # mag-3NN-MnMn-Mart-OUT
 3
 COMB
@@ -168,6 +168,15 @@ COMB
 mart
 OUT
 8
+
+# mag-3NN-MnMn-Aust-IN
+3
+COMB
+1
+1
+aust
+IN
+4
 
 # mag-3NN-NiNi-Aust-IN
 3
@@ -187,20 +196,11 @@ aust
 OUT
 8
 
-#mag-3NN-NiNi-Mart-IN
+# mag-3NN-MnMn-Aust-OUT
 3
 COMB
-0
-0
-mart
-IN
-4
-
-#mag-3NN-NiNi-Mart-OUT
-3
-COMB
-0
-0
-mart
+1
+1
+aust
 OUT
 8

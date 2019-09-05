@@ -5,6 +5,8 @@ Atom::Atom(void) {
 	spin = 10;
 	phase = 10;
 	index = 10;
+	J = 0;
+	K = 0;
 }
 
 Atom::Atom(int _index, int _species, int _spin, int _phase, int _pos[3]) {
@@ -15,6 +17,8 @@ Atom::Atom(int _index, int _species, int _spin, int _phase, int _pos[3]) {
 	pos[0] = _pos[0];
 	pos[1] = _pos[1];
 	pos[2] = _pos[2];
+	J = 0;
+	K = 0;
 }
 
 void Atom::setNeighbor(int _order, string _plain, int _index) {
@@ -35,6 +39,24 @@ void Atom::setNeighbor(int _order, string _plain, int _index) {
 	neighbor_orders.push_back(_order);
 }
 
+int Atom::getNeighbor(int _order, int _neighbor, vector<Atom> &atom_list) {
+	int neighbor_index;
+	if (_order == 1) {
+		neighbor_index = neighbors_1[_neighbor];
+	}
+	else if (_order == 2) {
+		neighbor_index = neighbors_2[_neighbor];
+	}
+	else if (_order == 3) {
+		neighbor_index = neighbors_3[_neighbor];
+	}
+	else {
+		cout << "error";
+		cout << '\n';
+		neighbor_index= 1000000000;
+	}
+	return neighbor_index;
+}
 int Atom::getNeighborSpin(int _order, int _neighbor, vector<Atom> &atom_list) {
 	int neighbor_index;
 	int neighbor_spin;
@@ -152,6 +174,10 @@ string Atom::getNeighborPlain(int _neighbor) {
 	return neighbor_plain;
 }
 
+void Atom::incJK(float J_inc, float K_inc) {
+	J += J_inc;
+	K += K_inc;
+}
 
 void Atom::setSpin(int _spin) {
 	spin = _spin;

@@ -8,10 +8,8 @@ using namespace std;
 
 class Atom {
 private:
-	vector<int> neighbors_1;
 	vector<int> neighbors_2;
 	vector<int> neighbors_3;
-	vector<int> neighbors;
 	vector<int> neighbor_orders;
 	vector<string> neighbor_plain_1;
 	vector<string> neighbor_plain_2;
@@ -22,6 +20,10 @@ private:
 	int phase;
 
 public:
+	vector<int> neighbors_1;
+	vector<int> neighbors;
+	float J;
+	float K;
 	int index;
 	int pos[3];
 	Atom(void);
@@ -30,9 +32,11 @@ public:
 	void setSpin(int _spin);
 	void setSpecies(int _species);
 	void setPhase(int _phase);
+	void incJK(float J_inc, float K_inc);
 	int getSpin(void);
 	int getSpecies(void);
 	int getPhase(void);
+	int getNeighbor(int _order, int _neighbor, vector<Atom> &atom_list);
 	int getNeighborSpin(int _order, int _neighbor, vector<Atom> &atom_list);
 	int getNeighborSpecies(int _order, int _neighbor, vector<Atom> &atom_list);
 	int getNeighborPhase(int _order, int _neighbor, vector<Atom> &atom_list);

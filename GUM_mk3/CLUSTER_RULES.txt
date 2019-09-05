@@ -1,57 +1,3 @@
-# mono_NiA
-0
-COMB
-0
-9
-aust
-ALL
-1
-
-# mono_MnA
-0
-COMB
-1
-9
-aust
-ALL
-1
-
-# mono_InA
-0
-COMB
-2
-9
-aust
-ALL
-1
-
-# mono_NiM
-0
-COMB
-0
-9
-mart
-ALL
-1
-
-# mono_MnM
-0
-COMB
-1
-9
-mart
-ALL
-1
-
-# mono_InM
-0
-COMB
-2
-9
-mart
-ALL
-1
-
 # NN-NiNi-Mart
 1
 COMB
@@ -331,6 +277,24 @@ aust
 ALL
 12
 
+# 3NN-MnIn-Aust
+3
+PERM
+1 2
+1 2
+aust
+ALL
+12
+
+# 3NN-InIn-Aust
+3
+COMB
+2
+2
+aust
+ALL
+12
+
 # 3NN-NiNi-Aust
 3
 COMB
@@ -342,27 +306,55 @@ ALL
 
 # 3NN-NiIn-Aust
 3
-COMB
+PERM
 0 2
 0 2
 aust
 ALL
 12
 
-# 3NN-MnIn-Aust
+# 3NN-NiMn-Aust
 3
 PERM
-1 2
-1 2
+0 1
+0 1
 aust
 ALL
 12
+
 
 # 3NN-MnMn-Mart-IN
 3
 COMB
 1
 1
+mart
+IN
+4
+
+# 3NN-MnIn-Mart-IN
+3
+PERM
+1 2
+1 2
+mart
+IN
+4
+
+# 3NN-MnNi-Mart-IN
+3
+PERM
+0 1
+0 1
+mart
+IN
+4
+
+# 3NN-NiIn-Mart-IN
+3
+PERM
+0 2
+0 2
 mart
 IN
 4
@@ -376,11 +368,47 @@ mart
 IN
 4
 
+# 3NN-InIn-Mart-IN
+3
+COMB
+2
+2
+mart
+IN
+4
+
 # 3NN-MnMn-Mart-OUT
 3
 COMB
 1
 1
+mart
+OUT
+8
+
+# 3NN-MnIn-Mart-OUT
+3
+PERM
+1 2
+1 2
+mart
+OUT
+8
+
+# 3NN-MnNi-Mart-OUT
+3
+PERM
+0 1
+0 1
+mart
+OUT
+8
+
+# 3NN-NiIn-Mart-OUT
+3
+PERM
+0 2
+0 2
 mart
 OUT
 8
@@ -394,38 +422,11 @@ mart
 OUT
 8
 
-# 3NN-MnIn-Mart-IN
+# 3NN-InIn-Mart-OUT
 3
-PERM
-1 2
-1 2
-mart
-IN
-4
-
-# 3NN-MnIn-Mart-OUT
-3
-PERM
-1 2
-1 2
-mart
-OUT
-8
-
-# 3NN-NiIn-Mart-IN
-3
-PERM
-0 2
-0 2
-mart
-IN
-4
-
-# 3NN-NiIn-Mart-OUT
-3
-PERM
-0 2
-0 2
+COMB
+2
+2
 mart
 OUT
 8
